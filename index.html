@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>BI Data Analyst — Study Flashcards</title>
+<style>
+  :root {
+    --bg: #ece3d0;
+    --bg-soft: #e3d8c0;
+    --card: #f8f3e8;
+    --card-2: #efe7d4;
+    --text: #3b2f23;
+    --muted: #8a7a63;
+    --accent: #7a5230;
+    --accent-2: #5a3a22;
+    --green: #4f6f47;
+    --green-soft: rgba(79, 111, 71, 0.18);
+    --red: #9c3a2e;
+    --red-soft: rgba(156, 58, 46, 0.13);
+    --border: #d9cbb0;
+    --shadow: 0 12px 30px rgba(80, 60, 38, 0.13);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E") repeat,
+      radial-gradient(1100px 600px at 85% -10%, rgba(122, 82, 48, 0.10), transparent),
+      radial-gradient(900px 500px at -10% 5%, rgba(90, 58, 34, 0.07), transparent),
+      var(--bg);
+    background-blend-mode: soft-light, normal, normal;
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 4px double var(--accent);
+    flex-wrap: wrap;
+  }
+
+  .brand h1 {
+    font-size: 1.6rem;
+    margin: 0;
+    letter-spacing: 0;
+    font-weight: 700;
+  }
+  .brand p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .badge b { color: var(--text); }
+
+  .panel {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E") repeat,
+      linear-gradient(180deg, var(--card), var(--bg-soft));
+    background-blend-mode: soft-light, normal;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 26px;
+  }
+
+  /* ---- Start screen ---- */
+  .lead { color: var(--muted); margin-top: 0; }
+
+  .section-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 22px 0 10px;
+  }
+
+  .modes, .modules { display: grid; gap: 10px; }
+  .modules { grid-template-columns: 1fr; }
+
+  .choice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.05s, background 0.15s;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice:active { transform: translateY(1px); }
+  .choice.selected {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(122, 82, 48, 0.12), var(--card-2));
+  }
+  .choice .count {
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--card);
+    border-radius: 999px;
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+  .choice .check { color: var(--accent); font-weight: 700; opacity: 0; }
+  .choice.selected .check { opacity: 1; }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+  .switch { position: relative; width: 44px; height: 26px; flex: 0 0 44px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .slider:before {
+    content: "";
+    position: absolute;
+    height: 18px; width: 18px;
+    left: 3px; top: 3px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: rgba(122, 82, 48, 0.30); border-color: var(--accent); }
+  .switch input:checked + .slider:before { transform: translateX(18px); background: var(--accent); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.05s, filter 0.15s, opacity 0.15s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #f8f3e8;
+    width: 100%;
+    margin-top: 22px;
+    box-shadow: 0 6px 18px rgba(90, 58, 34, 0.28);
+  }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+  .btn-ghost {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover { border-color: var(--accent); }
+
+  /* ---- Quiz screen ---- */
+  .quiz-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    gap: 12px;
+  }
+  .progress {
+    height: 8px;
+    background: var(--card-2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .progress > div {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.3s ease;
+  }
+
+  .qtag {
+    display: inline-block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    background: rgba(122, 82, 48, 0.10);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 12px;
+  }
+  .question {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+    letter-spacing: 0;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:disabled { cursor: default; }
+  .opt .key {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .opt.correct {
+    border-color: var(--green);
+    background: var(--green-soft);
+  }
+  .opt.correct .key { background: var(--green); color: #f8f3e8; border-color: var(--green); }
+  .opt.wrong {
+    border-color: var(--red);
+    background: var(--red-soft);
+  }
+  .opt.wrong .key { background: var(--red); color: #f8f3e8; border-color: var(--red); }
+  .opt .mark { margin-left: auto; font-weight: 700; }
+
+  .explain {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    font-size: 0.94rem;
+    color: var(--muted);
+    display: none;
+  }
+  .explain.show { display: block; }
+  .explain b { color: var(--text); }
+  .explain .verdict { font-weight: 700; }
+  .explain .verdict.ok { color: var(--green); }
+  .explain .verdict.no { color: var(--red); }
+
+  .quiz-foot {
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .hint { color: var(--muted); font-size: 0.82rem; }
+
+  /* ---- Results ---- */
+  .score-ring {
+    text-align: center;
+    margin: 8px 0 18px;
+  }
+  .score-num {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .score-sub { color: var(--muted); }
+  .result-msg { text-align: center; font-size: 1.05rem; margin-bottom: 22px; }
+  .result-actions { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 480px) { .result-actions { grid-template-columns: 1fr; } }
+
+  .missed-list { margin-top: 24px; }
+  .missed-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--card-2);
+  }
+  .missed-item .mq { font-weight: 600; margin-bottom: 6px; }
+  .missed-item .ma { font-size: 0.9rem; color: var(--muted); }
+  .missed-item .ma .good { color: var(--green); }
+
+  .hidden { display: none !important; }
+
+  footer.foot {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 28px;
+  }
+  footer.foot a { color: var(--accent); text-decoration: none; }
+
+  /* ---- Phone / small-screen tuning ---- */
+  @media (max-width: 600px) {
+    .wrap { padding: 18px 14px 48px;
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+    .panel { padding: 18px; border-radius: 10px; }
+    header.top { margin-bottom: 18px; padding-bottom: 14px; gap: 8px; }
+    .brand h1 { font-size: 1.3rem; }
+    .brand p { font-size: 0.85rem; }
+    .lead { font-size: 0.95rem; }
+    .question { font-size: 1.12rem; margin-bottom: 18px; }
+    .opt, .choice { font-size: 0.95rem; padding: 13px 14px; }
+    .qtag { font-size: 0.66rem; }
+    .quiz-head { font-size: 0.8rem; }
+    .score-num { font-size: 2.5rem; }
+    .result-msg { font-size: 1rem; }
+    /* Stack the footer so the action button is a full-width tap target */
+    .quiz-foot { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+    #nextBtn { width: 100% !important; }
+    .quiz-foot .hint { display: none; }
+  }
+
+  /* Comfortable tap targets / no accidental zoom on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    .opt, .choice, .btn { min-height: 48px; }
+    .switch { width: 50px; height: 30px; flex-basis: 50px; }
+    .slider:before { height: 22px; width: 22px; }
+    .switch input:checked + .slider:before { transform: translateX(20px); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>BI Data Analyst — Study Deck</h1>
+      <p>Welcome to the BI Data Analyst Career Path</p>
+    </div>
+    <div class="badge">Best: <b id="bestScore">—</b></div>
+  </header>
+
+  <!-- START SCREEN -->
+  <section id="startScreen" class="panel">
+    <p class="lead">Flashcards with multiple-choice questions to lock in the cheatsheets. Each card is asked a different way — and with differently-worded answers — each time you study. Pick what to study, then go.</p>
+
+    <noscript>
+      <div style="border:1px solid var(--red); background:var(--red-soft); color:var(--text); border-radius:12px; padding:14px 16px; margin:6px 0 4px;">
+        <b>JavaScript is turned off, so the cards can't load.</b> This usually means the page is open in the iPhone Files <em>preview</em>, which can't run interactive pages. Open the file in a real web browser instead — see the notes at the bottom of the file's instructions, or add it to your Home Screen.
+      </div>
+    </noscript>
+
+    <div class="section-label">Modules</div>
+    <div id="moduleList" class="modules"></div>
+
+    <div class="section-label">Mode</div>
+    <div class="toggle-row">
+      <label class="switch"><input type="checkbox" id="shuffleToggle" checked /><span class="slider"></span></label>
+      <span>Shuffle question order</span>
+    </div>
+    <div class="toggle-row">
+      <label class="switch"><input type="checkbox" id="shuffleOpts" checked /><span class="slider"></span></label>
+      <span>Shuffle answer choices</span>
+    </div>
+
+    <button id="startBtn" class="btn btn-primary">Start studying →</button>
+  </section>
+
+  <!-- QUIZ SCREEN -->
+  <section id="quizScreen" class="panel hidden">
+    <div class="quiz-head">
+      <span id="qProgress">Question 1 of 10</span>
+      <span id="qScore">Score: 0</span>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+
+    <span id="qTag" class="qtag">Module</span>
+    <h2 id="questionText" class="question"></h2>
+    <div id="optionsBox" class="options"></div>
+
+    <div id="explainBox" class="explain">
+      <div id="verdict" class="verdict"></div>
+      <div id="explainText" style="margin-top:6px;"></div>
+    </div>
+
+    <div class="quiz-foot">
+      <span class="hint">Tip: press 1–4 to answer, Enter for next</span>
+      <button id="nextBtn" class="btn btn-primary hidden" style="width:auto; margin:0;">Next →</button>
+    </div>
+  </section>
+
+  <!-- RESULTS SCREEN -->
+  <section id="resultScreen" class="panel hidden">
+    <div class="score-ring">
+      <div class="score-num"><span id="finalPct">0</span>%</div>
+      <div class="score-sub"><span id="finalRaw">0 / 0</span> correct</div>
+    </div>
+    <div id="resultMsg" class="result-msg"></div>
+
+    <div class="result-actions">
+      <button id="retryMissedBtn" class="btn btn-ghost">Review missed (<span id="missedCount">0</span>)</button>
+      <button id="restartBtn" class="btn btn-primary" style="margin:0;">Study again</button>
+    </div>
+
+    <div id="missedList" class="missed-list"></div>
+  </section>
+
+  <footer class="foot">
+    Built for self-study · Source: Codecademy BI Data Analyst cheatsheets ·
+    <a href="#" id="resetBest">reset best score</a>
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   QUESTION BANK
+   Add future modules by pushing more objects into MODULES.
+   Each card: { variants:[ {q, options:[...], answer:<index>}, ... ], explain }
+   Every variant is a self-contained wording of the same concept — its own
+   question text AND its own (reworded) answer options, with `answer` pointing
+   at the correct option within THAT variant. One variant is picked at random
+   each study session so you get used to the idea being phrased differently.
+   (A legacy card shaped { q, options, answer, explain } still works too.)
+   ========================================================================= */
+const MODULES = [
+  {
+    id: "s1",
+    name: "Section 1 · Path Overview & Intro to Data",
+    questions: [
+      {
+        variants: [
+          {
+            q: "In tidy data (long format), what does each column represent?",
+            options: ["A variable", "An observation", "A single data point", "A table"],
+            answer: 0
+          },
+          {
+            q: "In a tidy (long-format) dataset, a single column corresponds to what?",
+            options: ["One feature/variable being measured", "One observation (record)", "One individual cell value", "One separate dataset"],
+            answer: 0
+          },
+          {
+            q: "When data is in tidy/long format, each column holds what?",
+            options: ["The values for one variable", "The values for one record", "A lone data point", "An entire table"],
+            answer: 0
+          }
+        ],
+        explain: "In tidy/long format, each column represents a variable and each row is an observation."
+      },
+      {
+        variants: [
+          {
+            q: "In tidy data, what does each row represent?",
+            options: ["A variable", "An observation", "A column header", "A summary statistic"],
+            answer: 1
+          },
+          {
+            q: "Within a tidy dataset, a single row corresponds to what?",
+            options: ["One observation (record)", "One variable/feature", "A field name", "An aggregate value"],
+            answer: 0
+          },
+          {
+            q: "When data follows tidy principles, each row captures what?",
+            options: ["A single observation", "A single variable", "The name of a column", "A computed average"],
+            answer: 0
+          }
+        ],
+        explain: "Each row is one observation; each column is one variable."
+      },
+      {
+        variants: [
+          {
+            q: "Which is NOT one of the three rules of tidy data?",
+            options: ["Each variable forms a column", "Each observation forms a row", "Each observational unit type forms a table", "Each table must be sorted alphabetically"],
+            answer: 3
+          },
+          {
+            q: "Which of these is not part of the three tidy-data rules?",
+            options: ["Tables must be sorted alphabetically", "Every variable is its own column", "Every observation is its own row", "Each type of observational unit gets its own table"],
+            answer: 0
+          },
+          {
+            q: "All of the following are tidy-data rules except which one?",
+            options: ["Rows must be in alphabetical order", "One column per variable", "One row per observation", "One table per observational unit type"],
+            answer: 0
+          }
+        ],
+        explain: "The three rules: each variable is a column, each observation is a row, and each type of observational unit forms a table. Sorting is not a rule."
+      },
+      {
+        variants: [
+          {
+            q: "Which data format is more human-readable but less suitable for analysis?",
+            options: ["Wide format", "Long format", "Tidy format", "Tabular format"],
+            answer: 0
+          },
+          {
+            q: "Which layout is easier for people to read yet harder to analyze?",
+            options: ["Wide", "Long", "Tidy", "Stacked"],
+            answer: 0
+          },
+          {
+            q: "Which format trades analysis-friendliness for human readability?",
+            options: ["Wide format", "Long (tidy) format", "Normalized format", "Key-value format"],
+            answer: 0
+          }
+        ],
+        explain: "Wide format is easier for humans to read but less suitable for analysis; long format is preferred for analysis."
+      },
+      {
+        variants: [
+          {
+            q: "Which format organizes data so each column is a variable and each row is an observation?",
+            options: ["Long format", "Wide format", "Nested format", "Pivoted format"],
+            answer: 0
+          },
+          {
+            q: "Which format puts one variable per column and one observation per row?",
+            options: ["Long (tidy) format", "Wide format", "Pivoted format", "Hierarchical format"],
+            answer: 0
+          },
+          {
+            q: "The 'one variable per column, one observation per row' structure describes which format?",
+            options: ["Long format", "Wide format", "Cross-tab format", "Nested format"],
+            answer: 0
+          }
+        ],
+        explain: "Long format organizes data with one variable per column and one observation per row — this is tidy data."
+      },
+      {
+        variants: [
+          {
+            q: "Mean, median, and standard deviation are examples of what?",
+            options: ["Summary statistics", "Variable types", "Tidy data rules", "Missing data categories"],
+            answer: 0
+          },
+          {
+            q: "What category do mean, median, and standard deviation fall under?",
+            options: ["Summary (descriptive) statistics", "Kinds of variables", "Rules for tidy data", "Types of missing data"],
+            answer: 0
+          },
+          {
+            q: "Measures like the mean, median, and standard deviation are collectively called what?",
+            options: ["Summary statistics", "Data types", "Cleaning steps", "Sampling methods"],
+            answer: 0
+          }
+        ],
+        explain: "These are summary statistics — aggregated snapshots that help identify trends quickly."
+      },
+      {
+        variants: [
+          {
+            q: "What is the main purpose of summary statistics?",
+            options: ["Aggregated snapshots that help identify trends quickly", "To clean messy data automatically", "To label categorical variables", "To fill in missing data"],
+            answer: 0
+          },
+          {
+            q: "Why do analysts use summary statistics?",
+            options: ["To get a quick aggregated view that surfaces trends", "To automatically fix formatting errors", "To assign categories to variables", "To impute missing values"],
+            answer: 0
+          },
+          {
+            q: "Summary statistics are most useful for doing what?",
+            options: ["Quickly spotting trends through aggregated snapshots", "Repairing structurally broken tables", "Converting text to numbers", "Removing duplicate rows"],
+            answer: 0
+          }
+        ],
+        explain: "Summary statistics give aggregated data snapshots (mean, median, std dev) to spot trends quickly."
+      },
+      {
+        variants: [
+          {
+            q: "What does \"garbage in, garbage out\" mean?",
+            options: ["Data quality directly impacts the accuracy of results", "Old data should always be deleted", "More data is always better", "Algorithms can fix any data problem"],
+            answer: 0
+          },
+          {
+            q: "The saying \"garbage in, garbage out\" is getting at what idea?",
+            options: ["Poor input data yields poor results", "Deleting old records improves accuracy", "Bigger datasets are always better", "A good model can rescue bad data"],
+            answer: 0
+          },
+          {
+            q: "What principle does \"garbage in, garbage out\" express?",
+            options: ["The quality of results depends on the quality of the data", "Speed matters more than accuracy", "Quantity beats quality", "Algorithms compensate for flawed data"],
+            answer: 0
+          }
+        ],
+        explain: "Poor-quality input produces poor-quality output regardless of how good the algorithm is."
+      },
+      {
+        variants: [
+          {
+            q: "If training data is mislabeled, what is the result?",
+            options: ["Inaccurate results regardless of algorithm quality", "The algorithm corrects the labels automatically", "Faster training times", "More accurate predictions"],
+            answer: 0
+          },
+          {
+            q: "What happens when the data used to train a model is mislabeled?",
+            options: ["Results stay inaccurate no matter how good the algorithm is", "The model quietly fixes the wrong labels", "Training finishes faster", "Predictions become more reliable"],
+            answer: 0
+          },
+          {
+            q: "Mislabeled training data leads to what outcome?",
+            options: ["Unreliable results even with a strong algorithm", "Self-correcting labels", "Reduced training time", "Higher prediction accuracy"],
+            answer: 0
+          }
+        ],
+        explain: "Mislabeled training data produces inaccurate results no matter how strong the algorithm is."
+      },
+      {
+        variants: [
+          {
+            q: "Age and income are examples of which type of variable?",
+            options: ["Quantitative", "Categorical", "Ordinal", "Nominal"],
+            answer: 0
+          },
+          {
+            q: "What type of variable do age and income represent?",
+            options: ["Quantitative (numeric amounts)", "Categorical (groupings)", "Ordinal (ranked categories)", "Nominal (unordered labels)"],
+            answer: 0
+          },
+          {
+            q: "Age and income would be classified as which kind of variable?",
+            options: ["Quantitative", "Nominal", "Ordinal", "Binary"],
+            answer: 0
+          }
+        ],
+        explain: "Quantitative variables are amounts or counts, such as age and income."
+      },
+      {
+        variants: [
+          {
+            q: "Pet type and brand are examples of which type of variable?",
+            options: ["Categorical", "Quantitative", "Binary", "Continuous"],
+            answer: 0
+          },
+          {
+            q: "What type of variable do 'pet type' and 'brand' represent?",
+            options: ["Categorical (groupings)", "Quantitative (amounts)", "Binary (two-valued)", "Continuous (measured)"],
+            answer: 0
+          },
+          {
+            q: "Pet type and brand would be classified as which kind of variable?",
+            options: ["Categorical", "Quantitative", "Continuous", "Discrete numeric"],
+            answer: 0
+          }
+        ],
+        explain: "Categorical variables represent groupings, such as pet type or brand."
+      },
+      {
+        variants: [
+          {
+            q: "Quantitative variables represent…",
+            options: ["Amounts or counts", "Groupings", "Rankings only", "Two categories only"],
+            answer: 0
+          },
+          {
+            q: "What do quantitative variables measure?",
+            options: ["Numeric amounts or counts", "Category memberships", "Only ordered ranks", "Exactly two groups"],
+            answer: 0
+          },
+          {
+            q: "A quantitative variable captures what?",
+            options: ["A count or numeric amount", "A grouping or label", "A rank order", "A yes/no value"],
+            answer: 0
+          }
+        ],
+        explain: "Quantitative variables are amounts/counts (e.g., age, income)."
+      },
+      {
+        variants: [
+          {
+            q: "Categorical variables represent…",
+            options: ["Groupings", "Amounts or counts", "Continuous measurements", "Time series"],
+            answer: 0
+          },
+          {
+            q: "What do categorical variables capture?",
+            options: ["Group or category membership", "Numeric amounts", "Continuous measurements", "Sequential time data"],
+            answer: 0
+          },
+          {
+            q: "A categorical variable describes what?",
+            options: ["A grouping or label", "A measured quantity", "A running total", "A rate of change"],
+            answer: 0
+          }
+        ],
+        explain: "Categorical variables represent groupings (e.g., pet type, brand)."
+      },
+      {
+        variants: [
+          {
+            q: "Survey scales and placements (ranked categories) are which categorical subtype?",
+            options: ["Ordinal", "Nominal", "Binary", "Quantitative"],
+            answer: 0
+          },
+          {
+            q: "Ranked categories like survey scales and placements belong to which subtype?",
+            options: ["Ordinal (ordered categories)", "Nominal (unordered categories)", "Binary (two categories)", "Quantitative (numeric)"],
+            answer: 0
+          },
+          {
+            q: "Which categorical subtype covers ordered things like survey scales and placements?",
+            options: ["Ordinal", "Nominal", "Binary", "Continuous"],
+            answer: 0
+          }
+        ],
+        explain: "Ordinal categories have a meaningful rank/order, like survey scales and placements."
+      },
+      {
+        variants: [
+          {
+            q: "Species and names (unordered categories) are which categorical subtype?",
+            options: ["Nominal", "Ordinal", "Binary", "Continuous"],
+            answer: 0
+          },
+          {
+            q: "Unordered categories such as species and names belong to which subtype?",
+            options: ["Nominal (no inherent order)", "Ordinal (ranked)", "Binary (two-valued)", "Quantitative (numeric)"],
+            answer: 0
+          },
+          {
+            q: "Which categorical subtype covers label-only data like species and names?",
+            options: ["Nominal", "Ordinal", "Binary", "Discrete"],
+            answer: 0
+          }
+        ],
+        explain: "Nominal categories are unordered, like species or names."
+      },
+      {
+        variants: [
+          {
+            q: "A variable with exactly two mutually exclusive categories is called…",
+            options: ["Binary", "Nominal", "Ordinal", "Quantitative"],
+            answer: 0
+          },
+          {
+            q: "What do you call a variable that has only two mutually exclusive categories?",
+            options: ["Binary", "Nominal (many unordered groups)", "Ordinal (ranked groups)", "Continuous"],
+            answer: 0
+          },
+          {
+            q: "A two-category, mutually-exclusive variable is known as what?",
+            options: ["A binary variable", "A nominal variable", "An ordinal variable", "A quantitative variable"],
+            answer: 0
+          }
+        ],
+        explain: "Binary variables have exactly two mutually exclusive categories."
+      },
+      {
+        variants: [
+          {
+            q: "Which categorical subtype has a meaningful order or rank?",
+            options: ["Ordinal", "Nominal", "Binary", "None of them"],
+            answer: 0
+          },
+          {
+            q: "Which type of categorical variable carries a meaningful order?",
+            options: ["Ordinal", "Nominal", "Binary", "All are unordered"],
+            answer: 0
+          },
+          {
+            q: "Ordered or ranked categories belong to which categorical subtype?",
+            options: ["Ordinal", "Nominal", "Binary", "Quantitative"],
+            answer: 0
+          }
+        ],
+        explain: "Ordinal is the ranked categorical subtype (e.g., survey ratings)."
+      },
+      {
+        variants: [
+          {
+            q: "What is 'messy data'?",
+            options: ["Data that violates the rules of a tidy dataset", "Data with too many rows", "Any data containing decimals", "Data stored in a spreadsheet"],
+            answer: 0
+          },
+          {
+            q: "How would you define 'messy data'?",
+            options: ["Data that breaks tidy-data rules", "Data that simply has lots of rows", "Data that includes decimal numbers", "Data kept in a spreadsheet"],
+            answer: 0
+          },
+          {
+            q: "Which description best fits 'messy data'?",
+            options: ["It doesn't follow tidy-data structure", "It's just a very large table", "It contains fractional values", "It lives in Excel"],
+            answer: 0
+          }
+        ],
+        explain: "Messy data violates tidy-data rules — inconsistent formatting, misaligned columns, or structural problems."
+      },
+      {
+        variants: [
+          {
+            q: "What does MCAR stand for?",
+            options: ["Missing Completely at Random", "Missing Categorically and Randomly", "Mostly Complete and Reliable", "Measured, Cleaned, and Ready"],
+            answer: 0
+          },
+          {
+            q: "The abbreviation MCAR stands for what?",
+            options: ["Missing Completely at Random", "Mostly Complete, Almost Right", "Missing, Corrected, and Re-checked", "Measured Categories And Ranks"],
+            answer: 0
+          },
+          {
+            q: "What do the letters MCAR represent?",
+            options: ["Missing Completely at Random", "Missing Conditionally After Recording", "Manually Collected And Reviewed", "Mean-Centered And Rescaled"],
+            answer: 0
+          }
+        ],
+        explain: "MCAR = Missing Completely at Random — there is no detectable cause for the missing values."
+      },
+      {
+        variants: [
+          {
+            q: "What does MAR stand for?",
+            options: ["Missing at Random", "Missing After Recording", "Mean Average Result", "Manually Added Records"],
+            answer: 0
+          },
+          {
+            q: "The abbreviation MAR stands for what?",
+            options: ["Missing at Random", "Measured And Recorded", "Mostly Accurate Result", "Multiple Average Ranks"],
+            answer: 0
+          },
+          {
+            q: "What do the letters MAR represent?",
+            options: ["Missing at Random", "Mean Adjusted Range", "Manually Annotated Rows", "Missing And Removed"],
+            answer: 0
+          }
+        ],
+        explain: "MAR = Missing at Random — the missingness depends on another variable's value."
+      },
+      {
+        variants: [
+          {
+            q: "Missing data with no detectable cause is classified as…",
+            options: ["MCAR", "MAR", "Structurally missing", "Messy data"],
+            answer: 0
+          },
+          {
+            q: "How do you classify missing data that has no detectable cause?",
+            options: ["MCAR — Missing Completely at Random", "MAR — Missing at Random", "Structurally missing", "Simply messy data"],
+            answer: 0
+          },
+          {
+            q: "When values are missing for no detectable reason, the data is labeled…",
+            options: ["Missing Completely at Random (MCAR)", "Missing at Random (MAR)", "Structurally missing", "Mislabeled"],
+            answer: 0
+          }
+        ],
+        explain: "MCAR (Missing Completely at Random) has no detectable cause."
+      },
+      {
+        variants: [
+          {
+            q: "Missing data that depends on another variable's value is classified as…",
+            options: ["MAR", "MCAR", "Structurally missing", "Binary"],
+            answer: 0
+          },
+          {
+            q: "How do you classify missing data whose absence depends on another variable?",
+            options: ["MAR — Missing at Random", "MCAR — Missing Completely at Random", "Structurally missing", "Nominal"],
+            answer: 0
+          },
+          {
+            q: "When missingness is tied to the value of another variable, the data is labeled…",
+            options: ["Missing at Random (MAR)", "Missing Completely at Random (MCAR)", "Structurally missing", "Ordinal"],
+            answer: 0
+          }
+        ],
+        explain: "MAR (Missing at Random) is missing based on the value of another variable."
+      },
+      {
+        variants: [
+          {
+            q: "Male dogs having no data for 'litter size' is an example of…",
+            options: ["Structurally missing data", "MCAR", "MAR", "Messy data"],
+            answer: 0
+          },
+          {
+            q: "Male dogs lacking any 'litter size' value illustrates which kind of missing data?",
+            options: ["Structurally missing (expected absence)", "Missing Completely at Random", "Missing at Random", "Messy/unstructured data"],
+            answer: 0
+          },
+          {
+            q: "No 'litter size' recorded for male dogs is a case of what?",
+            options: ["Structurally missing data", "MCAR", "MAR", "A data-entry error"],
+            answer: 0
+          }
+        ],
+        explain: "Structurally missing data is an expected absence — male dogs can't have litter data."
+      },
+      {
+        variants: [
+          {
+            q: "What best describes 'structurally missing' data?",
+            options: ["An expected absence of data", "Data lost due to a software bug", "Data missing for no detectable reason", "Data missing based on another column"],
+            answer: 0
+          },
+          {
+            q: "Which statement best defines 'structurally missing' data?",
+            options: ["Data that is absent by design/expectation", "Data accidentally deleted by a bug", "Data missing with no detectable cause", "Data missing depending on another field"],
+            answer: 0
+          },
+          {
+            q: "How would you characterize 'structurally missing' data?",
+            options: ["An absence that's expected and makes sense", "A random glitch in storage", "Missingness with no explanation", "Missingness driven by another variable"],
+            answer: 0
+          }
+        ],
+        explain: "Structurally missing data is expected to be absent (e.g., litter size for male dogs)."
+      },
+      {
+        variants: [
+          {
+            q: "In tabular data, rows represent ___ and columns represent ___.",
+            options: ["observations; variables/features", "variables; observations", "tables; rows", "summaries; observations"],
+            answer: 0
+          },
+          {
+            q: "Fill in the blanks: in tabular data, rows are ___ and columns are ___.",
+            options: ["observations; variables (features)", "variables; observations", "records; tables", "totals; records"],
+            answer: 0
+          },
+          {
+            q: "In a typical data table, what do the rows and columns each represent?",
+            options: ["Rows = observations, columns = variables", "Rows = variables, columns = observations", "Rows = tables, columns = rows", "Rows = summaries, columns = observations"],
+            answer: 0
+          }
+        ],
+        explain: "In tabular data, rows are observations and columns are variables/features."
+      }
+    ]
+  },
+  {
+    id: "s2",
+    name: "Section 2 · Introduction to Data",
+    questions: [
+      {
+        variants: [
+          {
+            q: "Separating good, mediocre, and poor quality data is described as what kind of skill?",
+            options: ["A crucial data literacy skill", "An optional soft skill", "A programming skill", "A statistical formula"],
+            answer: 0
+          },
+          {
+            q: "Being able to tell good, mediocre, and poor data apart is considered what kind of skill?",
+            options: ["An essential data-literacy skill", "A nice-to-have soft skill", "A coding skill", "A mathematical formula"],
+            answer: 0
+          },
+          {
+            q: "Judging whether data is high, medium, or low quality is described as what type of skill?",
+            options: ["A core data-literacy competency", "An optional interpersonal skill", "A programming technique", "A statistical equation"],
+            answer: 0
+          }
+        ],
+        explain: "The ability to separate good, mediocre, and poor quality data is a crucial data literacy skill."
+      },
+      {
+        variants: [
+          {
+            q: "The phrase 'garbage in, garbage out' reflects how conclusions depend on…",
+            options: ["Data quality", "Sample size only", "The chosen chart type", "How fast data is collected"],
+            answer: 0
+          },
+          {
+            q: "'Garbage in, garbage out' highlights that your conclusions hinge on…",
+            options: ["The quality of the underlying data", "Sample size alone", "Which chart you pick", "Collection speed"],
+            answer: 0
+          },
+          {
+            q: "According to 'garbage in, garbage out', the trustworthiness of conclusions comes down to…",
+            options: ["How good the input data is", "Only how much data you have", "The visualization style", "How quickly it was gathered"],
+            answer: 0
+          }
+        ],
+        explain: "Conclusions depend on the quality of the data — garbage in, garbage out."
+      },
+      {
+        variants: [
+          {
+            q: "What diminishes data quality during data collection?",
+            options: ["Bias", "Large sample sizes", "Tidy formatting", "Summary statistics"],
+            answer: 0
+          },
+          {
+            q: "During collection, what tends to lower the quality of data?",
+            options: ["Bias", "Bigger samples", "Clean/tidy formatting", "Descriptive statistics"],
+            answer: 0
+          },
+          {
+            q: "Which factor erodes data quality at the collection stage?",
+            options: ["Bias in how it's gathered", "A large number of records", "Well-structured formatting", "Calculating the mean"],
+            answer: 0
+          }
+        ],
+        explain: "Bias introduced during data collection diminishes data quality."
+      },
+      {
+        variants: [
+          {
+            q: "Which set of questions helps address bias in data?",
+            options: ["Who made it? Who participated? Who is left out?", "How big? How fast? How cheap?", "What color? What shape? What size?", "When? Where? Why not?"],
+            answer: 0
+          },
+          {
+            q: "Which questions should you ask to surface bias in a dataset?",
+            options: ["Who created it, who took part, and who's missing?", "How large, how quick, how cheap?", "What hue, what form, what scale?", "Which day, which place, which tool?"],
+            answer: 0
+          },
+          {
+            q: "To check a dataset for bias, which set of questions is most useful?",
+            options: ["Who produced it? Who was included? Who was excluded?", "How big, how fast, how affordable?", "What color, shape, and size?", "When, where, and how stored?"],
+            answer: 0
+          }
+        ],
+        explain: "Critical bias questions: Who made the data? Who participated? Who is left out?"
+      },
+      {
+        variants: [
+          {
+            q: "According to the cheatsheet, what does statistics measure?",
+            options: ["Whether events occur by chance or through systemic factors", "Only the average of a dataset", "The number of rows in a table", "How clean the data is"],
+            answer: 0
+          },
+          {
+            q: "What does statistics actually measure, per the cheatsheet?",
+            options: ["Whether outcomes are due to chance or to systemic factors", "Just the mean of the data", "The row count of a table", "The tidiness of the data"],
+            answer: 0
+          },
+          {
+            q: "The cheatsheet says statistics is used to measure what?",
+            options: ["If something happens randomly or because of systemic factors", "Only a dataset's average", "How many records exist", "Whether the data is formatted correctly"],
+            answer: 0
+          }
+        ],
+        explain: "Statistics measures whether events happen by chance or due to systemic factors."
+      },
+      {
+        variants: [
+          {
+            q: "The rush-hour traffic example is used to illustrate…",
+            options: ["How statistics distinguishes systemic patterns from chance", "How to clean messy data", "The difference between rows and columns", "How to label categorical variables"],
+            answer: 0
+          },
+          {
+            q: "What concept does the rush-hour traffic example demonstrate?",
+            options: ["Telling systemic patterns apart from random chance", "Tidying up messy data", "Rows versus columns", "Assigning categories to variables"],
+            answer: 0
+          },
+          {
+            q: "Why is the rush-hour traffic scenario used as an example?",
+            options: ["It shows a systemic pattern, not a chance event", "It demonstrates data cleaning", "It explains table structure", "It shows how to encode categories"],
+            answer: 0
+          }
+        ],
+        explain: "Peak rush hour has far more vehicles than off-peak — a systemic pattern, not chance."
+      },
+      {
+        variants: [
+          {
+            q: "Statistical analysis reveals what within datasets?",
+            options: ["Systemic patterns rather than isolated observations", "Only individual outliers", "The exact cause of every value", "Whether data is tidy"],
+            answer: 0
+          },
+          {
+            q: "What does statistical analysis uncover inside a dataset?",
+            options: ["Broad systemic patterns, not one-off observations", "Just the individual outliers", "The precise cause of each value", "Whether the data is formatted tidily"],
+            answer: 0
+          },
+          {
+            q: "When applied to data, what does statistical analysis bring to light?",
+            options: ["Overall patterns instead of isolated data points", "Only the extreme values", "A definite cause for every entry", "The tidiness of the table"],
+            answer: 0
+          }
+        ],
+        explain: "Statistics reveals systemic patterns instead of relying on isolated observations."
+      },
+      {
+        variants: [
+          {
+            q: "In which legal contexts is statistical analysis described as especially valuable?",
+            options: ["Discrimination cases and class-action lawsuits", "Traffic tickets and parking fines", "Patent filings only", "Tax audits only"],
+            answer: 0
+          },
+          {
+            q: "Statistical analysis is called especially valuable in which legal settings?",
+            options: ["Discrimination claims and class-action suits", "Parking and speeding tickets", "Only patent applications", "Only tax audits"],
+            answer: 0
+          },
+          {
+            q: "Which kinds of legal cases benefit most from statistical analysis?",
+            options: ["Discrimination and class-action cases", "Minor traffic violations", "Patent disputes alone", "Tax audits alone"],
+            answer: 0
+          }
+        ],
+        explain: "Statistics is valuable in legal contexts like discrimination cases and class-action lawsuits."
+      }
+    ]
+  }
+];
+
+/* =========================================================================
+   APP LOGIC
+   ========================================================================= */
+const $ = (id) => document.getElementById(id);
+const BEST_KEY = "biStudyBest";
+
+/* localStorage can throw in some file:// / private-browsing contexts — guard it
+   so a blocked storage API never stops the app from loading. */
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  remove(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+let selectedModules = new Set(MODULES.map(m => m.id)); // default: all selected
+let activeQuestions = [];
+let current = 0;
+let score = 0;
+let missed = [];
+let answeredThis = false;
+
+/* ---- Start screen build ---- */
+function renderModules() {
+  const box = $("moduleList");
+  box.innerHTML = "";
+  MODULES.forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "choice" + (selectedModules.has(m.id) ? " selected" : "");
+    btn.innerHTML = `
+      <span><span class="check">✓ </span>${m.name}</span>
+      <span class="count">${m.questions.length} cards</span>`;
+    btn.onclick = () => {
+      if (selectedModules.has(m.id)) selectedModules.delete(m.id);
+      else selectedModules.add(m.id);
+      btn.classList.toggle("selected");
+      $("startBtn").disabled = selectedModules.size === 0;
+    };
+    box.appendChild(btn);
+  });
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* Pick one of a card's wordings at random. Each variant carries its own
+   question text, options, and answer index. Falls back to a legacy card
+   that is itself shaped { q, options, answer }. */
+function pickVariant(card) {
+  const v = (card.variants && card.variants.length) ? card.variants : [card];
+  return v[Math.floor(Math.random() * v.length)];
+}
+
+function buildQuestions() {
+  let qs = [];
+  MODULES.forEach(m => {
+    if (selectedModules.has(m.id)) {
+      m.questions.forEach(card => {
+        const v = pickVariant(card);
+        qs.push({
+          q: v.q,
+          options: v.options.slice(),
+          answer: v.answer,
+          explain: card.explain,
+          module: m.name
+        });
+      });
+    }
+  });
+  if ($("shuffleToggle").checked) qs = shuffle(qs);
+  if ($("shuffleOpts").checked) {
+    qs = qs.map(q => {
+      const order = shuffle(q.options.map((_, i) => i));
+      return {
+        ...q,
+        options: order.map(i => q.options[i]),
+        answer: order.indexOf(q.answer)
+      };
+    });
+  }
+  return qs;
+}
+
+/* ---- Quiz flow ---- */
+function startQuiz(questions) {
+  activeQuestions = questions;
+  current = 0;
+  score = 0;
+  missed = [];
+  show("quizScreen");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answeredThis = false;
+  const q = activeQuestions[current];
+
+  $("qProgress").textContent = `Question ${current + 1} of ${activeQuestions.length}`;
+  $("qScore").textContent = `Score: ${score}`;
+  $("progressBar").style.width = `${(current / activeQuestions.length) * 100}%`;
+  $("qTag").textContent = q.module;
+  $("questionText").textContent = q.q;
+
+  const box = $("optionsBox");
+  box.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.innerHTML = `<span class="key">${i + 1}</span><span>${opt}</span><span class="mark"></span>`;
+    b.onclick = () => selectAnswer(i);
+    box.appendChild(b);
+  });
+
+  $("explainBox").classList.remove("show");
+  $("nextBtn").classList.add("hidden");
+}
+
+function selectAnswer(i) {
+  if (answeredThis) return;
+  answeredThis = true;
+  const q = activeQuestions[current];
+  const opts = $("optionsBox").children;
+
+  for (let k = 0; k < opts.length; k++) {
+    opts[k].disabled = true;
+    if (k === q.answer) {
+      opts[k].classList.add("correct");
+      opts[k].querySelector(".mark").textContent = "✓";
+    }
+  }
+
+  const correct = i === q.answer;
+  if (correct) {
+    score++;
+    $("qScore").textContent = `Score: ${score}`;
+  } else {
+    opts[i].classList.add("wrong");
+    opts[i].querySelector(".mark").textContent = "✗";
+    missed.push(q);
+  }
+
+  const v = $("verdict");
+  v.className = "verdict " + (correct ? "ok" : "no");
+  v.textContent = correct ? "Correct!" : "Not quite.";
+  $("explainText").innerHTML = q.explain;
+  $("explainBox").classList.add("show");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").focus();
+}
+
+function nextQuestion() {
+  if (!answeredThis) return;
+  current++;
+  if (current >= activeQuestions.length) finish();
+  else renderQuestion();
+}
+
+function finish() {
+  $("progressBar").style.width = "100%";
+  const total = activeQuestions.length;
+  const pct = Math.round((score / total) * 100);
+  $("finalPct").textContent = pct;
+  $("finalRaw").textContent = `${score} / ${total}`;
+
+  let msg;
+  if (pct === 100) msg = "Perfect score — you've got this cheatsheet memorised. 🎯";
+  else if (pct >= 80) msg = "Strong work. A couple more passes and it's locked in.";
+  else if (pct >= 50) msg = "Good progress — review the misses and run it again.";
+  else msg = "Early days. Review below, then try again — repetition wins.";
+  $("resultMsg").textContent = msg;
+
+  // best score (percent) saved per nothing-specific — overall best
+  const best = Number(store.get(BEST_KEY) || 0);
+  if (pct > best) {
+    store.set(BEST_KEY, String(pct));
+    updateBest();
+  }
+
+  $("missedCount").textContent = missed.length;
+  $("retryMissedBtn").disabled = missed.length === 0;
+  $("retryMissedBtn").style.opacity = missed.length === 0 ? "0.5" : "1";
+
+  const ml = $("missedList");
+  ml.innerHTML = "";
+  if (missed.length) {
+    const head = document.createElement("div");
+    head.className = "section-label";
+    head.textContent = "Questions you missed";
+    ml.appendChild(head);
+    missed.forEach(q => {
+      const item = document.createElement("div");
+      item.className = "missed-item";
+      item.innerHTML = `
+        <div class="mq">${q.q}</div>
+        <div class="ma">Answer: <span class="good">${q.options[q.answer]}</span></div>`;
+      ml.appendChild(item);
+    });
+  }
+
+  show("resultScreen");
+}
+
+function updateBest() {
+  const best = store.get(BEST_KEY);
+  $("bestScore").textContent = best ? best + "%" : "—";
+}
+
+/* ---- Screen switching ---- */
+function show(id) {
+  ["startScreen", "quizScreen", "resultScreen"].forEach(s => {
+    $(s).classList.toggle("hidden", s !== id);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---- Events ---- */
+$("startBtn").onclick = () => {
+  const qs = buildQuestions();
+  if (qs.length) startQuiz(qs);
+};
+$("nextBtn").onclick = nextQuestion;
+$("restartBtn").onclick = () => show("startScreen");
+$("retryMissedBtn").onclick = () => {
+  if (missed.length) startQuiz(shuffle(missed));
+};
+$("resetBest").onclick = (e) => {
+  e.preventDefault();
+  store.remove(BEST_KEY);
+  updateBest();
+};
+
+document.addEventListener("keydown", (e) => {
+  if (!$("quizScreen").classList.contains("hidden")) {
+    if (["1", "2", "3", "4"].includes(e.key)) {
+      const idx = Number(e.key) - 1;
+      const opts = $("optionsBox").children;
+      if (idx < opts.length && !answeredThis) selectAnswer(idx);
+    } else if (e.key === "Enter" && answeredThis) {
+      nextQuestion();
+    }
+  }
+});
+
+/* ---- Init ---- */
+renderModules();
+updateBest();
+</script>
+</body>
+</html>
