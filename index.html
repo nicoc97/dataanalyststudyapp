@@ -100,6 +100,21 @@
   /* ---- Start screen ---- */
   .lead { color: var(--muted); margin-top: 0; }
 
+  .progress-summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 6px; }
+  .stat {
+    display: flex; flex-direction: column; gap: 2px;
+    background: var(--card-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 12px; min-width: 78px; flex: 1 1 78px;
+  }
+  .stat .v { font-size: 1.15rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+  .stat .l { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+  .io-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .io-row .btn { flex: 1 1 0; padding: 11px 14px; font-size: 0.9rem; }
+  .muted-sub { color: var(--muted); font-size: 0.82rem; font-style: italic; }
+  .count b { color: var(--accent); }
+  #startNote { color: var(--red); font-size: 0.88rem; margin-top: 12px; text-align: center; }
+  #startNote:empty { display: none; }
+
   .section-label {
     font-size: 0.78rem;
     text-transform: uppercase;
@@ -407,10 +422,20 @@
       </div>
     </noscript>
 
+    <div class="section-label">Your progress</div>
+    <div id="progressSummary" class="progress-summary"></div>
+    <div class="io-row">
+      <button id="exportBtn" class="btn btn-ghost">⬆ Export progress</button>
+      <button id="importBtn" class="btn btn-ghost">⬇ Import progress</button>
+    </div>
+
+    <div class="section-label">Study mode</div>
+    <div id="modeList" class="modes"></div>
+
     <div class="section-label">Modules</div>
     <div id="moduleList" class="modules"></div>
 
-    <div class="section-label">Mode</div>
+    <div class="section-label">Options</div>
     <div class="toggle-row">
       <label class="switch"><input type="checkbox" id="shuffleToggle" checked /><span class="slider"></span></label>
       <span>Shuffle question order</span>
@@ -420,7 +445,8 @@
       <span>Shuffle answer choices</span>
     </div>
 
-    <button id="startBtn" class="btn btn-primary">Start studying →</button>
+    <button id="startBtn" class="btn btn-primary">Start smart review →</button>
+    <p id="startNote"></p>
   </section>
 
   <!-- QUIZ SCREEN -->
@@ -1158,7 +1184,8 @@ const MODULES = [
    APP LOGIC
    ========================================================================= */
 const $ = (id) => document.getElementById(id);
-const BEST_KEY = "biStudyBest";
+const BEST_KEY = "biStudyBest";   // legacy key (best score only)
+const DATA_KEY = "biStudyData";   // everything: per-card SRS, best, streak
 
 /* localStorage can throw in some file:// / private-browsing contexts — guard it
    so a blocked storage API never stops the app from loading. */
@@ -1168,7 +1195,105 @@ const store = {
   remove(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
+/* ---- Persistent study data ----------------------------------------------
+   DATA = {
+     version, best,
+     streak: { count, lastDay:"YYYY-MM-DD" },
+     srs: { [cardId]: { box:1..5, due:ms, seen, correct, wrong, lastSeen:ms } }
+   }
+   Spaced repetition uses a Leitner box per card: a right answer promotes the
+   card a box (so it's seen less often), a wrong answer sends it back to box 1.
+   A card's identity is its concept (the shared `explain`), not the wording, so
+   progress survives adding or rewording variants later. ------------------- */
+function loadData() {
+  let d = null;
+  try { d = JSON.parse(store.get(DATA_KEY)); } catch (e) {}
+  if (!d || typeof d !== "object") d = {};
+  d.version = 2;
+  d.srs = (d.srs && typeof d.srs === "object") ? d.srs : {};
+  if (typeof d.best !== "number") d.best = Number(store.get(BEST_KEY) || 0) || 0;
+  if (!d.streak || typeof d.streak !== "object") d.streak = { count: 0, lastDay: null };
+  return d;
+}
+let DATA = loadData();
+function saveData() { store.set(DATA_KEY, JSON.stringify(DATA)); }
+
+/* Stable per-card id from module + concept (explain), with optional override. */
+function hashStr(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+function cardId(moduleId, card) {
+  return card.id || (moduleId + "-" + hashStr(card.explain || JSON.stringify(card.variants || card)));
+}
+
+/* Leitner scheduling: interval in days for each resulting box (1..5). */
+const DAY = 86400000;
+const BOX_DAYS = [0, 1, 2, 4, 8, 16];
+function getRec(id) {
+  return DATA.srs[id] || { box: 0, due: 0, seen: 0, correct: 0, wrong: 0, lastSeen: 0 };
+}
+function isDue(id, now) {
+  const r = DATA.srs[id];
+  if (!r || !r.seen) return true;        // never-seen cards are always due
+  return (r.due || 0) <= now;
+}
+function recordResult(id, correct) {
+  if (!id) return;
+  const r = getRec(id);
+  const now = Date.now();
+  r.seen++;
+  if (correct) {
+    r.correct++;
+    r.box = Math.min((r.box || 0) + 1, 5);
+    r.due = now + BOX_DAYS[r.box] * DAY;
+  } else {
+    r.wrong++;
+    r.box = 1;
+    r.due = now;                          // bring missed cards back next session
+  }
+  r.lastSeen = now;
+  DATA.srs[id] = r;
+  saveData();
+  touchStreak();
+}
+
+/* ---- Streak (daily study habit) ---- */
+function dayStr(d) {
+  const p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+function touchStreak() {
+  const today = dayStr(new Date());
+  const s = DATA.streak;
+  if (s.lastDay === today) return;
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  s.count = (s.lastDay === dayStr(y)) ? (s.count || 0) + 1 : 1;
+  s.lastDay = today;
+  saveData();
+}
+
+/* ---- Aggregate stats for the start screen ---- */
+function allCards() {
+  const out = [];
+  MODULES.forEach(m => m.questions.forEach(card => out.push({ m, card, id: cardId(m.id, card) })));
+  return out;
+}
+function masteryStats() {
+  const cards = allCards();
+  let mastered = 0;
+  cards.forEach(c => { const r = DATA.srs[c.id]; if (r && r.box >= 4) mastered++; });
+  return { mastered, total: cards.length };
+}
+function dueCount(cards, now) {
+  let n = 0;
+  cards.forEach(c => { if (isDue(c.id, now)) n++; });
+  return n;
+}
+
 let selectedModules = new Set(MODULES.map(m => m.id)); // default: all selected
+let studyMode = "smart";                                // smart | all | weak
 let activeQuestions = [];
 let current = 0;
 let score = 0;
@@ -1176,15 +1301,36 @@ let missed = [];
 let answeredThis = false;
 
 /* ---- Start screen build ---- */
+const STUDY_MODES = [
+  { id: "smart", name: "Smart review", desc: "Spaced repetition — due & new cards, weakest first" },
+  { id: "all",   name: "All cards",    desc: "Every card in the selected modules" },
+  { id: "weak",  name: "Weak spots",   desc: "Only cards you keep getting wrong" }
+];
+
+function renderModes() {
+  const box = $("modeList");
+  box.innerHTML = "";
+  STUDY_MODES.forEach(mode => {
+    const btn = document.createElement("button");
+    btn.className = "choice" + (studyMode === mode.id ? " selected" : "");
+    btn.innerHTML = `<span><span class="check">✓ </span>${mode.name}<br><span class="muted-sub">${mode.desc}</span></span>`;
+    btn.onclick = () => { studyMode = mode.id; $("startNote").textContent = ""; renderModes(); updateStartLabel(); };
+    box.appendChild(btn);
+  });
+}
+
 function renderModules() {
   const box = $("moduleList");
   box.innerHTML = "";
+  const now = Date.now();
   MODULES.forEach(m => {
+    const cards = m.questions.map(card => ({ id: cardId(m.id, card) }));
+    const due = dueCount(cards, now);
     const btn = document.createElement("button");
     btn.className = "choice" + (selectedModules.has(m.id) ? " selected" : "");
     btn.innerHTML = `
       <span><span class="check">✓ </span>${m.name}</span>
-      <span class="count">${m.questions.length} cards</span>`;
+      <span class="count">${m.questions.length} cards${due ? ` · <b>${due} due</b>` : ""}</span>`;
     btn.onclick = () => {
       if (selectedModules.has(m.id)) selectedModules.delete(m.id);
       else selectedModules.add(m.id);
@@ -1193,6 +1339,32 @@ function renderModules() {
     };
     box.appendChild(btn);
   });
+}
+
+function renderProgressSummary() {
+  const { mastered, total } = masteryStats();
+  const pct = total ? Math.round((mastered / total) * 100) : 0;
+  const due = dueCount(allCards(), Date.now());
+  const streak = DATA.streak.count || 0;
+  $("progressSummary").innerHTML = `
+    <div class="stat"><span class="v">${pct}%</span><span class="l">Mastered</span></div>
+    <div class="stat"><span class="v">${mastered}/${total}</span><span class="l">Cards</span></div>
+    <div class="stat"><span class="v">${due}</span><span class="l">Due now</span></div>
+    <div class="stat"><span class="v">${streak}${streak ? " 🔥" : ""}</span><span class="l">Day streak</span></div>
+    <div class="stat"><span class="v">${DATA.best || 0}%</span><span class="l">Best quiz</span></div>`;
+}
+
+function updateStartLabel() {
+  const map = { smart: "Start smart review →", all: "Study all cards →", weak: "Drill weak spots →" };
+  $("startBtn").textContent = map[studyMode] || "Start studying →";
+}
+
+function refreshStart() {
+  renderProgressSummary();
+  renderModes();
+  renderModules();
+  updateStartLabel();
+  $("startBtn").disabled = selectedModules.size === 0;
 }
 
 function shuffle(arr) {
@@ -1213,21 +1385,41 @@ function pickVariant(card) {
 }
 
 function buildQuestions() {
-  let qs = [];
+  const now = Date.now();
+
+  /* gather candidate cards from the selected modules */
+  let cards = [];
   MODULES.forEach(m => {
-    if (selectedModules.has(m.id)) {
-      m.questions.forEach(card => {
-        const v = pickVariant(card);
-        qs.push({
-          q: v.q,
-          options: v.options.slice(),
-          answer: v.answer,
-          explain: card.explain,
-          module: m.name
-        });
-      });
-    }
+    if (!selectedModules.has(m.id)) return;
+    m.questions.forEach(card => {
+      const id = cardId(m.id, card);
+      cards.push({ m, card, id, rec: DATA.srs[id] });
+    });
   });
+
+  /* narrow + order by study mode */
+  if (studyMode === "smart") {
+    let due = cards.filter(c => isDue(c.id, now));
+    if (!due.length) {                       // nothing due — surface the soonest few
+      due = cards.slice()
+                 .sort((a, b) => (a.rec ? a.rec.due : 0) - (b.rec ? b.rec.due : 0))
+                 .slice(0, Math.min(10, cards.length));
+    }
+    cards = due.sort((a, b) =>
+      ((a.rec ? a.rec.box : 0) - (b.rec ? b.rec.box : 0)) ||      // weakest first
+      ((a.rec ? a.rec.due : 0) - (b.rec ? b.rec.due : 0)));       // most overdue next
+  } else if (studyMode === "weak") {
+    cards = cards.filter(c => c.rec && c.rec.seen && c.rec.box <= 2)
+                 .sort((a, b) => (a.rec.box - b.rec.box) || (b.rec.wrong - a.rec.wrong));
+  }
+  /* studyMode === "all" keeps every selected card */
+
+  /* one random wording per card, carrying its stable id */
+  let qs = cards.map(({ m, card, id }) => {
+    const v = pickVariant(card);
+    return { id, q: v.q, options: v.options.slice(), answer: v.answer, explain: card.explain, module: m.name };
+  });
+
   if ($("shuffleToggle").checked) qs = shuffle(qs);
   if ($("shuffleOpts").checked) {
     qs = qs.map(q => {
@@ -1300,6 +1492,8 @@ function selectAnswer(i) {
     missed.push(q);
   }
 
+  recordResult(q.id, correct);   // update spaced-repetition schedule
+
   const v = $("verdict");
   v.className = "verdict " + (correct ? "ok" : "no");
   v.textContent = correct ? "Correct!" : "Not quite.";
@@ -1330,10 +1524,10 @@ function finish() {
   else msg = "Early days. Review below, then try again — repetition wins.";
   $("resultMsg").textContent = msg;
 
-  // best score (percent) saved per nothing-specific — overall best
-  const best = Number(store.get(BEST_KEY) || 0);
-  if (pct > best) {
-    store.set(BEST_KEY, String(pct));
+  // overall best single-session score
+  if (pct > (DATA.best || 0)) {
+    DATA.best = pct;
+    saveData();
     updateBest();
   }
 
@@ -1362,8 +1556,7 @@ function finish() {
 }
 
 function updateBest() {
-  const best = store.get(BEST_KEY);
-  $("bestScore").textContent = best ? best + "%" : "—";
+  $("bestScore").textContent = DATA.best ? DATA.best + "%" : "—";
 }
 
 /* ---- Screen switching ---- */
@@ -1377,18 +1570,67 @@ function show(id) {
 /* ---- Events ---- */
 $("startBtn").onclick = () => {
   const qs = buildQuestions();
-  if (qs.length) startQuiz(qs);
+  if (qs.length) { $("startNote").textContent = ""; startQuiz(qs); }
+  else {
+    $("startNote").textContent = studyMode === "weak"
+      ? "No weak spots right now — nice work. Try “All cards” to keep reviewing."
+      : "Nothing due in the selected modules. Switch to “All cards” to study ahead, or come back later.";
+  }
 };
 $("nextBtn").onclick = nextQuestion;
-$("restartBtn").onclick = () => show("startScreen");
+$("restartBtn").onclick = () => { refreshStart(); show("startScreen"); };
 $("retryMissedBtn").onclick = () => {
   if (missed.length) startQuiz(shuffle(missed));
 };
 $("resetBest").onclick = (e) => {
   e.preventDefault();
-  store.remove(BEST_KEY);
+  DATA.best = 0;
+  saveData();
   updateBest();
+  renderProgressSummary();
 };
+
+/* ---- Cross-browser progress: export / import a JSON blob ----
+   No server, so syncing is manual: export copies your data, import merges it
+   (per card, the most recently studied record wins). */
+$("exportBtn").onclick = () => {
+  const blob = JSON.stringify(DATA);
+  const ok = () => alert("Progress copied to clipboard ✅\n\nPaste it into “Import progress” on your other browser/device (or keep it as a backup).");
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(blob).then(ok).catch(() => window.prompt("Copy your progress data:", blob));
+  } else {
+    window.prompt("Copy your progress data:", blob);
+  }
+};
+$("importBtn").onclick = () => {
+  const raw = window.prompt("Paste your exported progress data:");
+  if (!raw) return;
+  let incoming;
+  try { incoming = JSON.parse(raw); } catch (e) { alert("That doesn't look like valid progress data."); return; }
+  mergeData(incoming);
+  saveData();
+  refreshStart();
+  alert("Progress imported and merged ✅");
+};
+
+function mergeData(incoming) {
+  if (!incoming || typeof incoming !== "object") return;
+  DATA.best = Math.max(DATA.best || 0, Number(incoming.best) || 0);
+
+  if (incoming.streak && incoming.streak.lastDay) {
+    if (!DATA.streak.lastDay || incoming.streak.lastDay > DATA.streak.lastDay) {
+      DATA.streak = incoming.streak;
+    } else if (incoming.streak.lastDay === DATA.streak.lastDay) {
+      DATA.streak.count = Math.max(DATA.streak.count || 0, incoming.streak.count || 0);
+    }
+  }
+
+  const inSrs = (incoming.srs && typeof incoming.srs === "object") ? incoming.srs : {};
+  Object.keys(inSrs).forEach(id => {
+    const mine = DATA.srs[id], theirs = inSrs[id];
+    if (!mine || (theirs && (theirs.lastSeen || 0) > (mine.lastSeen || 0))) DATA.srs[id] = theirs;
+  });
+}
 
 document.addEventListener("keydown", (e) => {
   if (!$("quizScreen").classList.contains("hidden")) {
@@ -1403,7 +1645,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 /* ---- Init ---- */
-renderModules();
+refreshStart();
 updateBest();
 </script>
 </body>
