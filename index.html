@@ -3,7 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ece3d0" id="themeColorMeta" />
 <title>BI Data Analyst — Study Flashcards</title>
+<!-- Apply saved theme before first paint to avoid a flash of the wrong mode. -->
+<script>
+  try {
+    var t = localStorage.getItem("biStudyTheme");
+    if (t === "dark" || (t === null && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+</script>
 <style>
   :root {
     --bg: #ece3d0;
@@ -21,6 +31,26 @@
     --border: #d9cbb0;
     --shadow: 0 12px 30px rgba(80, 60, 38, 0.13);
     --radius: 12px;
+    color-scheme: light;
+  }
+
+  /* Dark mode — same warm aesthetic, deep espresso tones, easier on the eyes. */
+  :root[data-theme="dark"] {
+    --bg: #1b1712;
+    --bg-soft: #221d16;
+    --card: #2b241c;
+    --card-2: #221c15;
+    --text: #ece3d0;
+    --muted: #9c8a72;
+    --accent: #c2945c;
+    --accent-2: #9c6f42;
+    --green: #7ba06c;
+    --green-soft: rgba(123, 160, 108, 0.20);
+    --red: #cf6a5a;
+    --red-soft: rgba(207, 106, 90, 0.16);
+    --border: #3a3025;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
   }
 
   * { box-sizing: border-box; }
@@ -38,6 +68,7 @@
     min-height: 100vh;
     line-height: 1.6;
     -webkit-text-size-adjust: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .wrap {
@@ -85,6 +116,34 @@
     white-space: nowrap;
   }
   .badge b { color: var(--text); }
+
+  .head-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    padding: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--accent);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  .theme-toggle:active { transform: translateY(1px); }
+  .theme-toggle svg { width: 20px; height: 20px; display: block; }
+  .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 
   .panel {
     background:
@@ -612,7 +671,18 @@
       <h1>BI Data Analyst — Study Deck</h1>
       <p>Welcome to the BI Data Analyst Career Path</p>
     </div>
-    <div class="badge">Best: <b id="bestScore">—</b></div>
+    <div class="head-actions">
+      <div class="badge">Best: <b id="bestScore">—</b></div>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"/>
+          <path d="M12 2v2.5M12 19.5V22M4.22 4.22l1.77 1.77M18.01 18.01l1.77 1.77M2 12h2.5M19.5 12H22M4.22 19.78l1.77-1.77M18.01 5.99l1.77-1.77"/>
+        </svg>
+      </button>
+    </div>
   </header>
 
   <!-- START SCREEN -->
@@ -2313,6 +2383,31 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   remove(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
+
+/* ---- Dark mode toggle ----------------------------------------------------
+   Theme is a UI preference, kept in its own key (not the synced study blob).
+   It's applied pre-paint by the inline <head> script; here we just wire the
+   moon/sun button and keep the theme-color meta in sync. */
+const THEME_KEY = "biStudyTheme";
+function applyTheme(theme) {
+  const dark = theme === "dark";
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const meta = $("themeColorMeta");
+  if (meta) meta.setAttribute("content", dark ? "#1b1712" : "#ece3d0");
+  const btn = $("themeToggle");
+  if (btn) btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+}
+(function initTheme() {
+  const saved = store.get(THEME_KEY);
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved || (prefersDark ? "dark" : "light"));
+  const btn = $("themeToggle");
+  if (btn) btn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    store.set(THEME_KEY, next);
+    applyTheme(next);
+  });
+})();
 
 /* ---- Persistent study data ----------------------------------------------
    DATA = {

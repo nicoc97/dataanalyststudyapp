@@ -2,6 +2,11 @@
 
 Newest first. **Claude:** read this at the start of a session for recent context, and add an entry here after making changes.
 
+## 2026-06-22 — Dark mode (moon/sun toggle, top right)
+Added a dark theme keeping the same warm, parchment aesthetic — just deeper espresso tones for easier night reading. Implementation is a near-pure palette swap because nearly everything already used CSS variables: a `:root[data-theme="dark"]` block overrides the colour vars (deep browns for `--bg`/`--card`, the old light parchment `#ece3d0` becomes `--text`, accent brightened to `#c2945c` so links/borders read on dark, green/red nudged brighter). The few hardcoded `#f8f3e8` button-text colours sit on the accent/green/red gradients, which stay rich enough that light text still passes — no per-element dark overrides needed.
+
+A round moon/sun button (`#themeToggle`, inline SVGs) lives in a new `.head-actions` wrapper next to the Best badge in the header; CSS shows the moon in light mode, sun in dark. Theme is a **UI preference**, so it's stored under its own `biStudyTheme` key (NOT the synced `biStudyData` blob — it shouldn't travel between devices via export/import). Applied **pre-paint** by a tiny inline `<head>` script (reads localStorage, else `prefers-color-scheme`) to avoid a flash of the wrong mode; the main `initTheme()` IIFE wires the click, persists, and keeps `<meta name="theme-color">` + the button's `aria-label` in sync. `color-scheme` is set per theme so form controls/scrollbars match. Verified both modes + toggle/persistence in the preview.
+
 ## 2026-06-22 — SQL Practice: write & run real SQL (sql.js)
 New "separate part" the user asked for: instead of only recognising SQL in multiple-choice cards, you now **write real queries** and they run and auto-check against a sample database. Reached from a **Theory / Practical segmented tab** on the start screen (replaced the original long-scroll where SQL Practice was a section at the bottom). Shared chrome (progress summary + export/import) stays above the tabs; each tab shows a live "N due" badge. `activeTab` follows the session — finishing/quitting a practice run lands you back on Practical, a quiz on Theory. State: `activeTab` + `applyTab()`/`selectTab()`/`updateTabBadges()`; the two panels (`#theoryTab`, `#practicalTab`) just toggle `.hidden`.
 
