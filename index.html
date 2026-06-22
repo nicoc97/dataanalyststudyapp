@@ -126,6 +126,54 @@
   .modes, .modules { display: grid; gap: 10px; }
   .modules { grid-template-columns: 1fr; }
 
+  .group { display: flex; flex-direction: column; }
+  /* Clickable accordion heading. */
+  .group-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 4px 2px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    opacity: 0.82;
+    transition: opacity 0.15s;
+  }
+  .group-label:hover { opacity: 1; }
+  .group-label .chev {
+    font-size: 0.7rem;
+    line-height: 1;
+    color: var(--accent);
+    transition: transform 0.2s ease;
+  }
+  .group.collapsed .group-label .chev { transform: rotate(-90deg); }
+  /* Body animates open/closed via grid-template-rows 1fr<->0fr (needs the
+     overflow-hidden inner wrapper). */
+  .group-body {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+  .group.collapsed .group-body { grid-template-rows: 0fr; }
+  .group-body-inner {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  /* Sub-modules sit indented under their heading. width:auto lets each button
+     stretch to its container minus the indent (no overflow). */
+  .modules .choice.sub { width: auto; margin-left: 14px; }
+
   .choice {
     display: flex;
     align-items: center;
@@ -508,7 +556,8 @@
 const MODULES = [
   {
     id: "s1",
-    name: "Section 1 · Path Overview & Intro to Data",
+    group: "Welcome to the BI Data Analyst Career Path",
+    name: "1 · Path Overview & Intro to Data",
     questions: [
       {
         variants: [
@@ -1014,7 +1063,8 @@ const MODULES = [
   },
   {
     id: "s2",
-    name: "Section 2 · Introduction to Data",
+    group: "Welcome to the BI Data Analyst Career Path",
+    name: "2 · Introduction to Data",
     questions: [
       {
         variants: [
@@ -1177,6 +1227,313 @@ const MODULES = [
         explain: "Statistics is valuable in legal contexts like discrimination cases and class-action lawsuits."
       }
     ]
+  },
+  {
+    id: "sql-manipulation",
+    group: "Learn SQL",
+    name: "Manipulation",
+    questions: [
+      {
+        variants: [
+          {
+            q: "What does the SQL `CREATE TABLE` statement do?",
+            options: ["Creates a new table with named columns and their datatypes", "Adds a new row to an existing table", "Changes the values in existing rows", "Removes a table from the database"],
+            answer: 0
+          },
+          {
+            q: "Which statement is used to make a brand-new table in a database?",
+            options: ["INSERT INTO", "CREATE TABLE", "ALTER TABLE", "UPDATE"],
+            answer: 1
+          },
+          {
+            q: "You want to define a new table along with its columns. Which command do you use?",
+            options: ["ALTER TABLE", "SELECT", "CREATE TABLE", "INSERT INTO"],
+            answer: 2
+          }
+        ],
+        explain: "CREATE TABLE creates a new table, specifying each column name and its datatype, e.g. CREATE TABLE student (id INTEGER, name TEXT);"
+      },
+      {
+        variants: [
+          {
+            q: "Inside a `CREATE TABLE` statement, what is listed within the parentheses?",
+            options: ["Column names paired with their datatypes", "The rows of data to insert", "A WHERE condition", "The name of another table to copy"],
+            answer: 0
+          },
+          {
+            q: "In `CREATE TABLE table_name ( ... )`, the parentheses contain what?",
+            options: ["Each column and its datatype", "The values for the first row", "Filtering conditions", "An ORDER BY clause"],
+            answer: 0
+          },
+          {
+            q: "When writing CREATE TABLE, the part in parentheses defines:",
+            options: ["The table's columns and their data types", "Which rows to delete", "The default sort order", "A join between two tables"],
+            answer: 0
+          }
+        ],
+        explain: "CREATE TABLE lists each column name with its datatype inside parentheses, e.g. CREATE TABLE student (id INTEGER, name TEXT, grade INTEGER);"
+      },
+      {
+        variants: [
+          {
+            q: "What does the `INSERT INTO` statement do?",
+            options: ["Adds a new record (row) to a table", "Creates a new table", "Edits an existing row", "Deletes a row"],
+            answer: 0
+          },
+          {
+            q: "Which statement adds a new row of data to a table?",
+            options: ["UPDATE", "INSERT INTO", "ALTER TABLE", "CREATE TABLE"],
+            answer: 1
+          },
+          {
+            q: "To add a brand-new record to a table, you use:",
+            options: ["DELETE", "SELECT", "INSERT INTO", "UPDATE"],
+            answer: 2
+          }
+        ],
+        explain: "INSERT INTO adds a new record (row) to a table."
+      },
+      {
+        variants: [
+          {
+            q: "In `INSERT INTO table (column1, column2) VALUES (value1, value2);`, what do the listed columns do?",
+            options: ["Map each value to a specific column", "Filter which rows are affected", "Rename the columns", "Sort the inserted data"],
+            answer: 0
+          },
+          {
+            q: "Why would you list column names in an INSERT, as in `INSERT INTO table (col1, col2) VALUES ( ... )`?",
+            options: ["To assign each value to a named column", "To create those columns", "To delete those columns", "To order the results"],
+            answer: 0
+          },
+          {
+            q: "`INSERT INTO students (name, grade) VALUES ('Ada', 5);` — the `(name, grade)` part means:",
+            options: ["The values go into the name and grade columns respectively", "Only the name and grade rows are kept", "name and grade become new tables", "The row is sorted by name then grade"],
+            answer: 0
+          }
+        ],
+        explain: "Listing columns in INSERT INTO maps each value to a named column. Without the column list, values fill the columns in their defined order."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `SELECT` statement do?",
+            options: ["Retrieves (queries) data from a table", "Inserts new rows", "Deletes rows", "Creates a table"],
+            answer: 0
+          },
+          {
+            q: "Which statement is used to fetch / query data from a table?",
+            options: ["INSERT", "SELECT", "UPDATE", "ALTER"],
+            answer: 1
+          },
+          {
+            q: "To read data out of a table, you use:",
+            options: ["DELETE", "CREATE TABLE", "SELECT", "INSERT INTO"],
+            answer: 2
+          }
+        ],
+        explain: "SELECT retrieves (queries) data from one or more columns of a table."
+      },
+      {
+        variants: [
+          {
+            q: "What does `SELECT * FROM table;` return?",
+            options: ["All columns for every row", "Only the first column", "Only rows matching a condition", "Just the list of column names"],
+            answer: 0
+          },
+          {
+            q: "In a SELECT statement, what does the asterisk `*` mean?",
+            options: ["All columns", "Multiply", "Distinct values only", "The primary key column"],
+            answer: 0
+          },
+          {
+            q: "`SELECT * FROM movies;` would give you:",
+            options: ["Every column of every row in movies", "Only the id column", "A count of the rows", "The table's structure"],
+            answer: 0
+          }
+        ],
+        explain: "The asterisk (*) is a wildcard meaning 'all columns', so SELECT * FROM table returns every column for all rows."
+      },
+      {
+        variants: [
+          {
+            q: "What does `ALTER TABLE table_name ADD column_name datatype;` do?",
+            options: ["Adds a new column to an existing table", "Creates a new table", "Adds a new row", "Deletes a column"],
+            answer: 0
+          },
+          {
+            q: "Which statement adds a new column to a table that already exists?",
+            options: ["CREATE TABLE", "ALTER TABLE ... ADD", "INSERT INTO", "UPDATE"],
+            answer: 1
+          },
+          {
+            q: "To add a column to an existing table, you use:",
+            options: ["INSERT INTO", "UPDATE ... SET", "ALTER TABLE ... ADD COLUMN", "CREATE TABLE"],
+            answer: 2
+          }
+        ],
+        explain: "ALTER TABLE ... ADD COLUMN adds a new column (with its datatype) to a table that already exists."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `UPDATE` statement do?",
+            options: ["Edits existing records (rows) in a table", "Adds new rows", "Removes a table", "Creates a column"],
+            answer: 0
+          },
+          {
+            q: "Which statement changes the values in existing rows?",
+            options: ["INSERT", "UPDATE", "SELECT", "CREATE TABLE"],
+            answer: 1
+          },
+          {
+            q: "To edit data that is already in a table, you use:",
+            options: ["DELETE", "ALTER", "UPDATE", "INSERT"],
+            answer: 2
+          }
+        ],
+        explain: "UPDATE edits existing records (rows) in a table."
+      },
+      {
+        variants: [
+          {
+            q: "In an `UPDATE` statement, what does the `SET` clause do?",
+            options: ["Specifies the columns and their new values", "Chooses which rows to change", "Names the table", "Sorts the results"],
+            answer: 0
+          },
+          {
+            q: "In `UPDATE table SET col = val WHERE ...`, what does the `WHERE` clause do?",
+            options: ["Selects which rows get updated", "Lists the new values", "Creates new columns", "Defines the table name"],
+            answer: 0
+          },
+          {
+            q: "Which pair correctly describes UPDATE's clauses?",
+            options: ["SET = new values; WHERE = which rows", "SET = which rows; WHERE = new values", "SET = sort order; WHERE = columns", "SET = table name; WHERE = datatype"],
+            answer: 0
+          }
+        ],
+        explain: "In UPDATE, SET specifies the columns and their new values; WHERE selects which rows are changed. Omitting WHERE updates every row."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `DELETE` statement do?",
+            options: ["Removes records (rows) from a table", "Removes a column", "Removes the whole table", "Edits a row"],
+            answer: 0
+          },
+          {
+            q: "Which statement removes rows from a table?",
+            options: ["DROP", "DELETE", "UPDATE", "ALTER"],
+            answer: 1
+          },
+          {
+            q: "To remove records from a table, you use:",
+            options: ["UPDATE", "INSERT", "DELETE", "SELECT"],
+            answer: 2
+          }
+        ],
+        explain: "DELETE removes records (rows) from a table; the WHERE clause controls which rows are removed."
+      },
+      {
+        variants: [
+          {
+            q: "What happens if you run `DELETE FROM table;` without a `WHERE` clause?",
+            options: ["Every row in the table is deleted", "Nothing — it raises an error", "Only the first row is deleted", "The table is dropped entirely"],
+            answer: 0
+          },
+          {
+            q: "Omitting the WHERE clause in a DELETE statement causes:",
+            options: ["All rows to be removed", "Only one row to be removed", "A syntax error", "The columns to be deleted"],
+            answer: 0
+          },
+          {
+            q: "`DELETE FROM students;` (with no WHERE) will:",
+            options: ["Delete all rows in students", "Delete the students table itself", "Delete nothing", "Delete only NULL rows"],
+            answer: 0
+          }
+        ],
+        explain: "Without a WHERE clause, DELETE removes ALL rows from the table (the table itself remains)."
+      },
+      {
+        variants: [
+          {
+            q: "What is the purpose of a `PRIMARY KEY` constraint?",
+            options: ["Uniquely identifies each row; only one allowed per table", "Lets a column hold duplicate values", "Sets a default value for the column", "Sorts the table by that column"],
+            answer: 0
+          },
+          {
+            q: "Which statement about PRIMARY KEY is true?",
+            options: ["A table can have only one PRIMARY KEY", "A table can have many PRIMARY KEYs", "It permits NULLs and duplicates", "It automatically sorts rows"],
+            answer: 0
+          },
+          {
+            q: "A column used to uniquely identify each row, with only one allowed per table, is the:",
+            options: ["UNIQUE constraint", "DEFAULT constraint", "PRIMARY KEY", "NOT NULL constraint"],
+            answer: 2
+          }
+        ],
+        explain: "PRIMARY KEY uniquely identifies each row. A table can have only one primary key, and its values must be unique and non-null."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `UNIQUE` constraint guarantee?",
+            options: ["Every row has a different value in that column", "The column always has a default value", "The column may be left empty", "The values are kept sorted"],
+            answer: 0
+          },
+          {
+            q: "How does UNIQUE differ from PRIMARY KEY?",
+            options: ["A table can have many UNIQUE columns but only one PRIMARY KEY", "UNIQUE allows duplicates; PRIMARY KEY does not", "They are identical", "UNIQUE columns auto-increment"],
+            answer: 0
+          },
+          {
+            q: "To ensure no two rows share the same value in a column (and you can have several such columns), you use:",
+            options: ["PRIMARY KEY", "DEFAULT", "UNIQUE", "NOT NULL"],
+            answer: 2
+          }
+        ],
+        explain: "UNIQUE ensures all values in a column differ across rows. Unlike PRIMARY KEY, a table can have many UNIQUE columns."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `NOT NULL` constraint enforce?",
+            options: ["The column must always have a value (cannot be empty)", "The column must be unique", "The column receives a default value", "The column identifies the row"],
+            answer: 0
+          },
+          {
+            q: "Which constraint prevents a column from being left empty?",
+            options: ["DEFAULT", "NOT NULL", "UNIQUE", "PRIMARY KEY"],
+            answer: 1
+          },
+          {
+            q: "A column that must always contain a value uses which constraint?",
+            options: ["UNIQUE", "PRIMARY KEY", "NOT NULL", "DEFAULT"],
+            answer: 2
+          }
+        ],
+        explain: "NOT NULL requires a column to always have a value — a row cannot be added with NULL in that column."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `DEFAULT` constraint do?",
+            options: ["Assigns a value to a column when none is specified", "Forces the column to be unique", "Prevents NULL values", "Identifies the row uniquely"],
+            answer: 0
+          },
+          {
+            q: "If you insert a row without giving a value for a column, which constraint fills it in automatically?",
+            options: ["NOT NULL", "DEFAULT", "PRIMARY KEY", "UNIQUE"],
+            answer: 1
+          },
+          {
+            q: "In `age INTEGER DEFAULT 10`, what does DEFAULT do?",
+            options: ["Makes age unique", "Stops age from being null", "Sets age to 10 when no value is provided", "Makes age the primary key"],
+            answer: 2
+          }
+        ],
+        explain: "DEFAULT assigns a preset value to a column when no value is given during INSERT, e.g. age INTEGER DEFAULT 10."
+      }
+    ]
   }
 ];
 
@@ -1185,7 +1542,7 @@ const MODULES = [
    ========================================================================= */
 const $ = (id) => document.getElementById(id);
 const BEST_KEY = "biStudyBest";   // legacy key (best score only)
-const DATA_KEY = "biStudyData";   // everything: per-card SRS, best, streak
+const DATA_KEY = "biStudyData";   // everything: per-card SRS, best
 
 /* localStorage can throw in some file:// / private-browsing contexts — guard it
    so a blocked storage API never stops the app from loading. */
@@ -1198,7 +1555,6 @@ const store = {
 /* ---- Persistent study data ----------------------------------------------
    DATA = {
      version, best,
-     streak: { count, lastDay:"YYYY-MM-DD" },
      srs: { [cardId]: { box:1..5, due:ms, seen, correct, wrong, lastSeen:ms } }
    }
    Spaced repetition uses a Leitner box per card: a right answer promotes the
@@ -1212,7 +1568,6 @@ function loadData() {
   d.version = 2;
   d.srs = (d.srs && typeof d.srs === "object") ? d.srs : {};
   if (typeof d.best !== "number") d.best = Number(store.get(BEST_KEY) || 0) || 0;
-  if (!d.streak || typeof d.streak !== "object") d.streak = { count: 0, lastDay: null };
   return d;
 }
 let DATA = loadData();
@@ -1256,22 +1611,6 @@ function recordResult(id, correct) {
   r.lastSeen = now;
   DATA.srs[id] = r;
   saveData();
-  touchStreak();
-}
-
-/* ---- Streak (daily study habit) ---- */
-function dayStr(d) {
-  const p = n => String(n).padStart(2, "0");
-  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
-}
-function touchStreak() {
-  const today = dayStr(new Date());
-  const s = DATA.streak;
-  if (s.lastDay === today) return;
-  const y = new Date(); y.setDate(y.getDate() - 1);
-  s.count = (s.lastDay === dayStr(y)) ? (s.count || 0) + 1 : 1;
-  s.lastDay = today;
-  saveData();
 }
 
 /* ---- Aggregate stats for the start screen ---- */
@@ -1293,6 +1632,7 @@ function dueCount(cards, now) {
 }
 
 let selectedModules = new Set(MODULES.map(m => m.id)); // default: all selected
+const collapsedGroups = new Set();                     // module-group accordion state (default: all open)
 let studyMode = "smart";                                // smart | all | weak
 let activeQuestions = [];
 let current = 0;
@@ -1323,21 +1663,55 @@ function renderModules() {
   const box = $("moduleList");
   box.innerHTML = "";
   const now = Date.now();
+  /* Group modules under their `group` heading, preserving first-seen order. */
+  const order = [];
+  const byGroup = {};
   MODULES.forEach(m => {
-    const cards = m.questions.map(card => ({ id: cardId(m.id, card) }));
-    const due = dueCount(cards, now);
-    const btn = document.createElement("button");
-    btn.className = "choice" + (selectedModules.has(m.id) ? " selected" : "");
-    btn.innerHTML = `
-      <span><span class="check">✓ </span>${m.name}</span>
-      <span class="count">${m.questions.length} cards${due ? ` · <b>${due} due</b>` : ""}</span>`;
-    btn.onclick = () => {
-      if (selectedModules.has(m.id)) selectedModules.delete(m.id);
-      else selectedModules.add(m.id);
-      btn.classList.toggle("selected");
-      $("startBtn").disabled = selectedModules.size === 0;
+    const g = m.group || "Other";
+    if (!byGroup[g]) { byGroup[g] = []; order.push(g); }
+    byGroup[g].push(m);
+  });
+  order.forEach(g => {
+    const collapsed = collapsedGroups.has(g);
+    const group = document.createElement("div");
+    group.className = "group" + (collapsed ? " collapsed" : "");
+
+    const head = document.createElement("button");
+    head.type = "button";
+    head.className = "group-label";
+    head.setAttribute("aria-expanded", String(!collapsed));
+    head.innerHTML = `<span class="chev">▾</span><span>${g}</span>`;
+    head.onclick = () => {
+      const nowCollapsed = !group.classList.contains("collapsed");
+      group.classList.toggle("collapsed", nowCollapsed);
+      head.setAttribute("aria-expanded", String(!nowCollapsed));
+      if (nowCollapsed) collapsedGroups.add(g); else collapsedGroups.delete(g);
     };
-    box.appendChild(btn);
+    group.appendChild(head);
+
+    const body = document.createElement("div");
+    body.className = "group-body";
+    const inner = document.createElement("div");
+    inner.className = "group-body-inner";
+    byGroup[g].forEach(m => {
+      const cards = m.questions.map(card => ({ id: cardId(m.id, card) }));
+      const due = dueCount(cards, now);
+      const btn = document.createElement("button");
+      btn.className = "choice sub" + (selectedModules.has(m.id) ? " selected" : "");
+      btn.innerHTML = `
+        <span><span class="check">✓ </span>${m.name}</span>
+        <span class="count">${m.questions.length} cards${due ? ` · <b>${due} due</b>` : ""}</span>`;
+      btn.onclick = () => {
+        if (selectedModules.has(m.id)) selectedModules.delete(m.id);
+        else selectedModules.add(m.id);
+        btn.classList.toggle("selected");
+        $("startBtn").disabled = selectedModules.size === 0;
+      };
+      inner.appendChild(btn);
+    });
+    body.appendChild(inner);
+    group.appendChild(body);
+    box.appendChild(group);
   });
 }
 
@@ -1345,12 +1719,10 @@ function renderProgressSummary() {
   const { mastered, total } = masteryStats();
   const pct = total ? Math.round((mastered / total) * 100) : 0;
   const due = dueCount(allCards(), Date.now());
-  const streak = DATA.streak.count || 0;
   $("progressSummary").innerHTML = `
     <div class="stat"><span class="v">${pct}%</span><span class="l">Mastered</span></div>
     <div class="stat"><span class="v">${mastered}/${total}</span><span class="l">Cards</span></div>
     <div class="stat"><span class="v">${due}</span><span class="l">Due now</span></div>
-    <div class="stat"><span class="v">${streak}${streak ? " 🔥" : ""}</span><span class="l">Day streak</span></div>
     <div class="stat"><span class="v">${DATA.best || 0}%</span><span class="l">Best quiz</span></div>`;
 }
 
@@ -1616,14 +1988,6 @@ $("importBtn").onclick = () => {
 function mergeData(incoming) {
   if (!incoming || typeof incoming !== "object") return;
   DATA.best = Math.max(DATA.best || 0, Number(incoming.best) || 0);
-
-  if (incoming.streak && incoming.streak.lastDay) {
-    if (!DATA.streak.lastDay || incoming.streak.lastDay > DATA.streak.lastDay) {
-      DATA.streak = incoming.streak;
-    } else if (incoming.streak.lastDay === DATA.streak.lastDay) {
-      DATA.streak.count = Math.max(DATA.streak.count || 0, incoming.streak.count || 0);
-    }
-  }
 
   const inSrs = (incoming.srs && typeof incoming.srs === "object") ? incoming.srs : {};
   Object.keys(inSrs).forEach(id => {

@@ -2,6 +2,30 @@
 
 Newest first. **Claude:** read this at the start of a session for recent context, and add an entry here after making changes.
 
+## 2026-06-22 — Accordion module groups + dropped "Section" prefix
+**Accordion:** each module-group heading is now a clickable button (`.group-label`) with a rotating chevron that expands/collapses its sub-modules. Body open/close animates via `grid-template-rows: 1fr ⇄ 0fr` on `.group-body` with an `overflow:hidden` `.group-body-inner` wrapper (the modern fr-row trick — no JS height math, smooth on iOS Safari 16+). Open/closed state lives in an in-memory `collapsedGroups` Set (default: all open; resets on reload — it's view state, not study data). Toggling only flips classes/aria, so it never touches `selectedModules` — a collapsed group's modules stay selected.
+- Gotcha noted: spacing between heading and first card lives on the heading's `padding-bottom`, **not** the inner wrapper. Padding on the inner doesn't clip with the fr-row collapse, so it left an ~8px sliver when closed. Verified collapsed body settles to exactly 0 (headers 10px apart = just the grid gap).
+
+**Renamed** the two intro modules to drop the word "Section": now `1 · Path Overview & Intro to Data` and `2 · Introduction to Data` (the group heading already says it's the career-path intro).
+
+**Verified in-browser:** no console errors; chevron rotates; collapsing hides sub-modules and the body height goes to 0; expanding restores them; names render without "Section".
+
+## 2026-06-22 — Grouped module picker + removed day streak
+**Grouped modules:** added a `group` field to each module object (kept `MODULES` flat so all card/selection logic is unchanged) and reworked `renderModules()` to render a group heading with its sub-modules indented beneath. Groups now: **Welcome to the BI Data Analyst Career Path** (Section 1, Section 2) and **Learn SQL** (Manipulation). Renamed the SQL module from "Learn SQL · Manipulation" to just "Manipulation" since the group header carries the track name. New `.group-label` style + `.choice.sub` indent (`width:auto` + `margin-left` so the grid stretches the button to cell-minus-indent, no overflow).
+
+**Removed day streak** entirely (user request): dropped the stat tile, `touchStreak()`/`dayStr()` and the call in `recordResult`, the `streak` init in `loadData`, and the streak branch in `mergeData`. Old `streak` data left in any existing localStorage/export blob is simply ignored — harmless. Stats row is now 4 tiles (Mastered, Cards, Due now, Best quiz) and the flex layout reflows fine.
+
+**Verified in-browser:** no console errors; picker renders both groups with correct sub-modules and `N cards · N due` badges; sub-items indented 14px with no container overflow; stats row no longer shows Day streak.
+
+## 2026-06-22 — Added "Learn SQL · Manipulation" module
+First module of the new **Learn SQL** track ([cheatsheet](https://www.codecademy.com/learn/paths/bi-data-analyst/tracks/dsf-learn-sql/modules/dsinf-learn-sql-manipulation/cheatsheet)).
+
+**Added:** module `id: "sql-manipulation"`, 15 cards (3 variants each), covering CREATE TABLE (purpose + parentheses syntax), INSERT INTO (purpose + naming columns), SELECT (purpose + `*` wildcard), ALTER TABLE … ADD COLUMN, UPDATE (purpose + SET/WHERE roles), DELETE (purpose + the no-WHERE "deletes all rows" gotcha), and the four column constraints (PRIMARY KEY, UNIQUE, NOT NULL, DEFAULT).
+
+**Naming:** broke from the `Section N ·` convention since this starts a new track — named it `Learn SQL · Manipulation` so the track is obvious in the module picker.
+
+**Verified in-browser:** script parses; no console errors; picker shows "Learn SQL · Manipulation — 15 cards · 15 due"; total deck 33 → 48 cards.
+
 ## 2026-06-21 — Spaced repetition, progress tracking, export/import sync
 Commit `185e392`.
 
