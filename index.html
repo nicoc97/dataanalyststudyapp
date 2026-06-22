@@ -1534,6 +1534,313 @@ const MODULES = [
         explain: "DEFAULT assigns a preset value to a column when no value is given during INSERT, e.g. age INTEGER DEFAULT 10."
       }
     ]
+  },
+  {
+    id: "sql-queries",
+    group: "Learn SQL",
+    name: "Queries",
+    questions: [
+      {
+        variants: [
+          {
+            q: "How do you retrieve only specific columns (e.g. name and year) from a table?",
+            options: ["SELECT name, year FROM movies;", "SELECT * FROM movies;", "GET name, year FROM movies;", "FROM movies SELECT name, year;"],
+            answer: 0
+          },
+          {
+            q: "Which query returns just the `title` and `rating` columns from `movies`?",
+            options: ["SELECT title, rating FROM movies;", "SELECT movies (title, rating);", "SELECT * FROM movies;", "FILTER title, rating FROM movies;"],
+            answer: 0
+          },
+          {
+            q: "To select particular columns rather than all of them, you:",
+            options: ["List the column names after SELECT, comma-separated", "Always use SELECT *", "Name the columns in a WHERE clause", "Use ORDER BY"],
+            answer: 0
+          }
+        ],
+        explain: "List the column names after SELECT (comma-separated) to return only those columns, e.g. SELECT name, year FROM movies; — use * for all columns."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `AS` keyword do in a query?",
+            options: ["Renames a column or table in the result (an alias)", "Filters rows by a condition", "Sorts the results", "Removes duplicate rows"],
+            answer: 0
+          },
+          {
+            q: "`SELECT name AS 'title' FROM movies;` — what does `AS 'title'` do?",
+            options: ["Renames the name column to 'title' in the output", "Creates a new permanent column called title", "Filters rows where name = title", "Sorts the rows by title"],
+            answer: 0
+          },
+          {
+            q: "To give a column a different name in the result set, you use:",
+            options: ["AS", "LIKE", "DISTINCT", "ORDER BY"],
+            answer: 0
+          }
+        ],
+        explain: "AS creates an alias — it renames a column (or table) in the result for readability, e.g. SELECT name AS 'title'. It doesn't change the underlying data."
+      },
+      {
+        variants: [
+          {
+            q: "What does `SELECT DISTINCT column FROM table;` return?",
+            options: ["Only the unique values, with duplicates removed", "Every row including duplicates", "Only the first row", "The rows sorted alphabetically"],
+            answer: 0
+          },
+          {
+            q: "Which keyword removes duplicate values from the results?",
+            options: ["UNIQUE", "DISTINCT", "ONLY", "DEDUP"],
+            answer: 1
+          },
+          {
+            q: "To list each value only once (no repeats) for a column, you use:",
+            options: ["ORDER BY", "LIMIT", "DISTINCT", "BETWEEN"],
+            answer: 2
+          }
+        ],
+        explain: "DISTINCT returns only the unique values of a column, filtering out duplicate rows."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `WHERE` clause do?",
+            options: ["Filters rows to those matching a condition", "Sorts the rows", "Renames columns", "Limits the number of rows returned"],
+            answer: 0
+          },
+          {
+            q: "`SELECT * FROM movies WHERE year > 2014;` returns:",
+            options: ["Only the rows where year is greater than 2014", "All rows, sorted by year", "Only the year column", "The first 2014 rows"],
+            answer: 0
+          },
+          {
+            q: "To keep only the records that meet a condition, you use:",
+            options: ["ORDER BY", "WHERE", "LIMIT", "AS"],
+            answer: 1
+          }
+        ],
+        explain: "WHERE filters rows to only those matching a condition. It supports the comparison operators =, !=, >, <, >=, <=."
+      },
+      {
+        variants: [
+          {
+            q: "What is the `LIKE` operator used for?",
+            options: ["Matching a text pattern in a WHERE clause", "Sorting text alphabetically", "Counting matching rows", "Joining two tables"],
+            answer: 0
+          },
+          {
+            q: "Which operator lets you search for a pattern (e.g. names starting with 'The')?",
+            options: ["LIKE", "BETWEEN", "IN", "AS"],
+            answer: 0
+          },
+          {
+            q: "`WHERE name LIKE 'The%'` uses LIKE to:",
+            options: ["Match a pattern of characters", "Match an exact value only", "Sort by name", "Remove duplicates"],
+            answer: 0
+          }
+        ],
+        explain: "LIKE matches a text pattern in a WHERE clause, used together with the wildcards % and _."
+      },
+      {
+        variants: [
+          {
+            q: "In a `LIKE` pattern, what does the `%` wildcard match?",
+            options: ["Zero or more characters", "Exactly one character", "Only digits", "A literal percent sign"],
+            answer: 0
+          },
+          {
+            q: "`WHERE title LIKE 'The%'` matches titles that:",
+            options: ["Start with 'The' followed by any characters", "Are exactly 'The'", "End with 'The'", "Have exactly one character after 'The'"],
+            answer: 0
+          },
+          {
+            q: "Which wildcard means 'any number of characters, including none'?",
+            options: ["_", "%", "*", "?"],
+            answer: 1
+          }
+        ],
+        explain: "% matches zero or more characters. 'The%' matches anything starting with 'The'; '%man%' matches anything containing 'man'."
+      },
+      {
+        variants: [
+          {
+            q: "In a `LIKE` pattern, what does the underscore `_` match?",
+            options: ["Exactly one character", "Zero or more characters", "A whole word", "A literal underscore"],
+            answer: 0
+          },
+          {
+            q: "`WHERE word LIKE '_ove'` matches:",
+            options: ["A single character followed by 'ove' (e.g. love, dove)", "Anything ending in 'ove'", "Exactly the word 'ove'", "Anything containing 'ove'"],
+            answer: 0
+          },
+          {
+            q: "Which wildcard stands for exactly one unspecified character?",
+            options: ["%", "_", "#", "*"],
+            answer: 1
+          }
+        ],
+        explain: "_ matches exactly one character. '_ove' matches love, dove, cove — one character then 'ove'."
+      },
+      {
+        variants: [
+          {
+            q: "What does `WHERE year BETWEEN 1980 AND 1990` match?",
+            options: ["Years from 1980 to 1990, inclusive of both ends", "Years strictly between 1980 and 1990, exclusive", "Only 1980 and 1990", "Years before 1980 or after 1990"],
+            answer: 0
+          },
+          {
+            q: "The `BETWEEN` operator filters by:",
+            options: ["A range of values, inclusive of both endpoints", "An exact value only", "A text pattern", "Unique values"],
+            answer: 0
+          },
+          {
+            q: "Which operator selects values within a range (inclusive)?",
+            options: ["IN", "BETWEEN", "LIKE", "DISTINCT"],
+            answer: 1
+          }
+        ],
+        explain: "BETWEEN filters by a range and is inclusive of both endpoints. It works with numbers, text, and dates, e.g. year BETWEEN 1980 AND 1990."
+      },
+      {
+        variants: [
+          {
+            q: "In a WHERE clause, what does `AND` require?",
+            options: ["Both conditions must be true for a row to match", "Either condition can be true", "Exactly one condition is true", "Neither condition is true"],
+            answer: 0
+          },
+          {
+            q: "`WHERE color = 'blue' AND year > 2014` matches cars that are:",
+            options: ["Blue AND made after 2014", "Blue OR made after 2014", "Blue or newer, but not both", "Any color made before 2014"],
+            answer: 0
+          },
+          {
+            q: "To require that two conditions are both satisfied, you combine them with:",
+            options: ["OR", "AND", "NOT", "BETWEEN"],
+            answer: 1
+          }
+        ],
+        explain: "AND combines conditions so a row matches only when all of them are true."
+      },
+      {
+        variants: [
+          {
+            q: "In a WHERE clause, what does `OR` require?",
+            options: ["At least one of the conditions is true", "Both conditions are true", "Neither condition is true", "Exactly one condition is true"],
+            answer: 0
+          },
+          {
+            q: "`WHERE state = 'CA' OR state = 'NY'` matches customers from:",
+            options: ["California OR New York", "Both California and New York at once", "Neither California nor New York", "Only California"],
+            answer: 0
+          },
+          {
+            q: "To match rows where either condition holds, you combine them with:",
+            options: ["AND", "OR", "LIKE", "IS"],
+            answer: 1
+          }
+        ],
+        explain: "OR combines conditions so a row matches if at least one of them is true."
+      },
+      {
+        variants: [
+          {
+            q: "How do you match rows where a column has no value?",
+            options: ["WHERE column IS NULL", "WHERE column = NULL", "WHERE column = ''", "WHERE column LIKE NULL"],
+            answer: 0
+          },
+          {
+            q: "Which test checks that a column DOES have a value (is not empty)?",
+            options: ["IS NOT NULL", "NOT EMPTY", "!= NULL", "HAS VALUE"],
+            answer: 0
+          },
+          {
+            q: "To test for missing (NULL) values, you must use:",
+            options: ["= NULL", "IS NULL / IS NOT NULL", "== NULL", "LIKE '%'"],
+            answer: 1
+          }
+        ],
+        explain: "Use IS NULL / IS NOT NULL to test for missing values — you can't compare to NULL with =, because NULL means 'unknown'."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `ORDER BY` clause do?",
+            options: ["Sorts the result rows by a column", "Filters rows by a condition", "Removes duplicate rows", "Limits the row count"],
+            answer: 0
+          },
+          {
+            q: "With no ASC/DESC given, `ORDER BY` sorts in which direction by default?",
+            options: ["Ascending (A→Z, low→high)", "Descending (Z→A, high→low)", "Random order", "Insertion order"],
+            answer: 0
+          },
+          {
+            q: "Which clause arranges the output rows in order of a column's values?",
+            options: ["WHERE", "ORDER BY", "GROUP BY", "LIMIT"],
+            answer: 1
+          }
+        ],
+        explain: "ORDER BY sorts the result rows by a column. The default direction is ascending (ASC); use DESC for descending."
+      },
+      {
+        variants: [
+          {
+            q: "Which keyword sorts results from highest to lowest (or Z→A)?",
+            options: ["DESC", "ASC", "TOP", "REVERSE"],
+            answer: 0
+          },
+          {
+            q: "`ORDER BY birth_date DESC` lists rows:",
+            options: ["Newest birth_date first (descending)", "Oldest birth_date first", "In random order", "Alphabetically by name"],
+            answer: 0
+          },
+          {
+            q: "To sort in descending order, you add which keyword after the column in ORDER BY?",
+            options: ["DOWN", "DESC", "HIGH", "REV"],
+            answer: 1
+          }
+        ],
+        explain: "Add DESC after the column in ORDER BY to sort descending (high→low / Z→A); ASC, the default, sorts ascending."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `LIMIT` clause do?",
+            options: ["Caps the result to a set number of rows", "Filters rows by a condition", "Sorts the rows", "Removes duplicates"],
+            answer: 0
+          },
+          {
+            q: "`SELECT * FROM movies LIMIT 5;` returns:",
+            options: ["At most 5 rows", "Exactly 5 columns", "Every row 5 times", "Only the 5th row"],
+            answer: 0
+          },
+          {
+            q: "To restrict how many rows a query returns, you use:",
+            options: ["WHERE", "ORDER BY", "LIMIT", "DISTINCT"],
+            answer: 2
+          }
+        ],
+        explain: "LIMIT restricts the result to a specified number of rows, e.g. LIMIT 5 returns at most 5 rows."
+      },
+      {
+        variants: [
+          {
+            q: "What does a `CASE` statement do in a query?",
+            options: ["Adds conditional (if/then) logic to produce different values", "Filters rows by a condition", "Sorts the results", "Removes duplicate rows"],
+            answer: 0
+          },
+          {
+            q: "Which keyword closes a `CASE` statement?",
+            options: ["END", "STOP", "DONE", "FINISH"],
+            answer: 0
+          },
+          {
+            q: "To return different output values depending on conditions (like if/else), you use:",
+            options: ["WHERE", "CASE ... WHEN ... THEN ... ELSE ... END", "BETWEEN", "DISTINCT"],
+            answer: 1
+          }
+        ],
+        explain: "CASE adds if/then logic inside a query: CASE WHEN condition THEN result ... ELSE result END. The ELSE is optional, and END closes the statement."
+      }
+    ]
   }
 ];
 

@@ -2,6 +2,15 @@
 
 Newest first. **Claude:** read this at the start of a session for recent context, and add an entry here after making changes.
 
+## 2026-06-22 — Added "Learn SQL · Queries" module
+Second module of the Learn SQL track ([cheatsheet](https://www.codecademy.com/learn/paths/bi-data-analyst/tracks/dsf-learn-sql/modules/dsinf-learn-sql-queries/cheatsheet)).
+
+**Added:** module `id: "sql-queries"`, `group: "Learn SQL"`, name "Queries" — 15 cards (3 variants each) covering SELECT (specific columns), AS (aliases), DISTINCT, WHERE (+ comparison operators), LIKE, the `%` and `_` wildcards, BETWEEN (inclusive range), AND, OR, IS NULL / IS NOT NULL, ORDER BY (+ default ASC), DESC, LIMIT, and CASE.
+
+**Note:** the WebFetch summary of the cheatsheet didn't surface CASE, but CASE is the signature topic of the Codecademy Queries module, so it's included. Flagged to the user to confirm against their cheatsheet version.
+
+**Verified in-browser:** no console errors; "Learn SQL" group now lists Manipulation + Queries (15 cards each); total deck 48 → 63 cards.
+
 ## 2026-06-22 — Accordion module groups + dropped "Section" prefix
 **Accordion:** each module-group heading is now a clickable button (`.group-label`) with a rotating chevron that expands/collapses its sub-modules. Body open/close animates via `grid-template-rows: 1fr ⇄ 0fr` on `.group-body` with an `overflow:hidden` `.group-body-inner` wrapper (the modern fr-row trick — no JS height math, smooth on iOS Safari 16+). Open/closed state lives in an in-memory `collapsedGroups` Set (default: all open; resets on reload — it's view state, not study data). Toggling only flips classes/aria, so it never touches `selectedModules` — a collapsed group's modules stay selected.
 - Gotcha noted: spacing between heading and first card lives on the heading's `padding-bottom`, **not** the inner wrapper. Padding on the inner doesn't clip with the fr-row collapse, so it left an ~8px sliver when closed. Verified collapsed body settles to exactly 0 (headers 10px apart = just the grid gap).
