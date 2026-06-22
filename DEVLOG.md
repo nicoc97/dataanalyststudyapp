@@ -2,6 +2,23 @@
 
 Newest first. **Claude:** read this at the start of a session for recent context, and add an entry here after making changes.
 
+## 2026-06-22 — SQL Practice: write & run real SQL (sql.js)
+New "separate part" the user asked for: instead of only recognising SQL in multiple-choice cards, you now **write real queries** and they run and auto-check against a sample database. Reached from a **Theory / Practical segmented tab** on the start screen (replaced the original long-scroll where SQL Practice was a section at the bottom). Shared chrome (progress summary + export/import) stays above the tabs; each tab shows a live "N due" badge. `activeTab` follows the session — finishing/quitting a practice run lands you back on Practical, a quiz on Theory. State: `activeTab` + `applyTab()`/`selectTab()`/`updateTabBadges()`; the two panels (`#theoryTab`, `#practicalTab`) just toggle `.hidden`.
+
+**Constraint change:** the user explicitly relaxed the old "everything in one `index.html` / no dependencies" rule — the real bar is just *works on GitHub Pages + works on iPhone*. That unlocked real execution. Updated `CLAUDE.md` to match.
+
+**Engine:** vendored **sql.js** (SQLite → WASM, v1.10.3) into `vendor/sql-wasm.js` + `vendor/sql-wasm.wasm` (committed, served same-origin, **not** a third-party CDN). `ensureSql()` lazy-loads it (cached promise) only when Practice first opens, so the flashcard app is unaffected and the ~640 KB WASM never loads otherwise.
+
+**Tasks:** `SQL_TASKS` (after `MODULES`) — 26 tasks across two groups, mirroring the existing Learn SQL modules. Manipulation (`celebs` theme, 12): CREATE/INSERT/SELECT/SELECT */ALTER/UPDATE/DELETE/DELETE-all/PRIMARY KEY/UNIQUE/NOT NULL/DEFAULT. Queries (`movies` theme, 14): specific columns, AS, DISTINCT, WHERE, LIKE + `%` + `_`, BETWEEN, AND, OR, IS NULL, ORDER BY, DESC, LIMIT, CASE.
+
+**Grading** compares **result sets, not text** (`gradeTask`→`sameResult`), so any equivalent query passes (verified: `year >= 2011` passes a `year > 2010` task). SELECT tasks compare query output; **mutation** tasks set `verify` (a SELECT run after the user's statements) and compare resulting DB *state*. Fresh in-memory DB per attempt — no accumulation. Flags: `ordered` (row order matters: ORDER BY/LIMIT), `checkColumns` (column names matter: AS/CASE). CREATE verifies use `UPPER(type)` so lowercase `integer`/`text` pass. Progress feeds the same Leitner SRS under `sqlt-`-prefixed ids (syncs via export/import for free); added a "SQL tasks" stat tile. "Mark correct anyway" is a safety valve for valid alternatives the checker misses.
+
+**Decisions:** kept it in `index.html` (not a separate page) to reuse the SRS, export/import, styling, and screen-switching — only the engine is external. Sample `imdb_rating`/`year` values are deliberately unique so ORDER BY/LIMIT have a single deterministic answer (otherwise ties break ordered comparison). First attempt counts toward SRS.
+
+**Verified in-browser** (localhost via preview tools): engine lazy-loads from `vendor/` with no console errors; all 26 reference solutions grade correct; deliberately-wrong queries all fail; SQL syntax errors surface; mutation grading checks final state and a re-attempt starts clean; `ordered`/`checkColumns` enforce; SRS record written under `sqlt-…`; responsive at iPhone width (375px) with the SQL field at 16px to stop iOS zoom and wide tables scrolling horizontally.
+
+**Follow-up (not built):** no service worker, so true offline on the Home Screen relies on the browser HTTP cache (same as today). If guaranteed offline is wanted later, add a small SW to cache `index.html` + `vendor/*`.
+
 ## 2026-06-22 — Added "Learn SQL · Queries" module
 Second module of the Learn SQL track ([cheatsheet](https://www.codecademy.com/learn/paths/bi-data-analyst/tracks/dsf-learn-sql/modules/dsinf-learn-sql-queries/cheatsheet)).
 

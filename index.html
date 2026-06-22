@@ -112,8 +112,8 @@
   .io-row .btn { flex: 1 1 0; padding: 11px 14px; font-size: 0.9rem; }
   .muted-sub { color: var(--muted); font-size: 0.82rem; font-style: italic; }
   .count b { color: var(--accent); }
-  #startNote { color: var(--red); font-size: 0.88rem; margin-top: 12px; text-align: center; }
-  #startNote:empty { display: none; }
+  #startNote, #practiceNote { color: var(--red); font-size: 0.88rem; margin-top: 12px; text-align: center; }
+  #startNote:empty, #practiceNote:empty { display: none; }
 
   .section-label {
     font-size: 0.78rem;
@@ -122,6 +122,41 @@
     color: var(--muted);
     margin: 22px 0 10px;
   }
+
+  /* Theory / Practical segmented tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 5px;
+    margin: 20px 0 6px;
+  }
+  .tab {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    font-family: inherit;
+    padding: 9px 12px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  }
+  .tab .tab-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.01em; }
+  .tab .tab-sub { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.85; }
+  .tab:hover { color: var(--text); }
+  .tab.selected {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #f8f3e8;
+    box-shadow: 0 4px 12px rgba(90, 58, 34, 0.22);
+  }
+  .tab.selected:hover { color: #f8f3e8; }
 
   .modes, .modules { display: grid; gap: 10px; }
   .modules { grid-template-columns: 1fr; }
@@ -418,6 +453,123 @@
   }
   footer.foot a { color: var(--accent); text-decoration: none; }
 
+  /* ---- SQL Practice ---- */
+  .practice-blurb { color: var(--muted); font-size: 0.9rem; margin: 0 0 12px; }
+  .practice-list { display: grid; gap: 10px; }
+
+  .task-prompt { font-size: 1.02rem; margin: 0 0 16px; color: var(--text); }
+
+  .schema-box {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card-2);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .schema-box > summary {
+    cursor: pointer;
+    padding: 11px 16px;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 700;
+    list-style: none;
+  }
+  .schema-box > summary::-webkit-details-marker { display: none; }
+  .schema-box > summary::before { content: "▸ "; color: var(--accent); }
+  .schema-box[open] > summary::before { content: "▾ "; }
+  .schema-tables { padding: 0 16px 14px; }
+  .schema-tables .tname {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+    margin: 10px 0 6px;
+    font-weight: 700;
+  }
+
+  .data-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  table.data-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.8rem;
+  }
+  table.data-table th, table.data-table td {
+    border: 1px solid var(--border);
+    padding: 5px 9px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.data-table th { background: var(--card); color: var(--accent); font-weight: 700; }
+  table.data-table td { background: var(--card-2); color: var(--text); }
+  table.data-table td.null { color: var(--muted); font-style: italic; }
+  .table-empty { color: var(--muted); font-style: italic; font-size: 0.82rem; padding: 6px 2px; }
+
+  .sql-input {
+    width: 100%;
+    min-height: 110px;
+    resize: vertical;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    -webkit-text-size-adjust: 100%;
+  }
+  .sql-input:focus { outline: none; border-color: var(--accent); }
+
+  .practice-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .practice-actions .btn { flex: 1 1 0; padding: 12px 16px; margin: 0; }
+  #runBtn { flex: 2 1 0; }
+
+  .sql-result { margin-top: 16px; }
+  .sql-result .result-label {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .sql-error {
+    border: 1px solid var(--red);
+    background: var(--red-soft);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+  }
+  .task-solution {
+    margin-top: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    white-space: pre-wrap;
+    color: var(--text);
+  }
+  .task-solution .sol-label {
+    display: block;
+    font-family: inherit;
+    color: var(--muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 4px;
+  }
+  #markCorrectBtn { padding: 9px 14px; font-size: 0.85rem; }
+  a.backlink { color: var(--muted); font-size: 0.85rem; text-decoration: none; }
+  a.backlink:hover { color: var(--accent); }
+
   /* ---- Phone / small-screen tuning ---- */
   @media (max-width: 600px) {
     .wrap { padding: 18px 14px 48px;
@@ -439,6 +591,9 @@
     .quiz-foot { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
     #nextBtn { width: 100% !important; }
     .quiz-foot .hint { display: none; }
+    /* 16px keeps iOS Safari from zooming when the SQL field gains focus */
+    .sql-input { font-size: 16px; }
+    .practice-actions { flex-wrap: wrap; }
   }
 
   /* Comfortable tap targets / no accidental zoom on touch devices */
@@ -462,8 +617,6 @@
 
   <!-- START SCREEN -->
   <section id="startScreen" class="panel">
-    <p class="lead">Flashcards with multiple-choice questions to lock in the cheatsheets. Each card is asked a different way — and with differently-worded answers — each time you study. Pick what to study, then go.</p>
-
     <noscript>
       <div style="border:1px solid var(--red); background:var(--red-soft); color:var(--text); border-radius:12px; padding:14px 16px; margin:6px 0 4px;">
         <b>JavaScript is turned off, so the cards can't load.</b> This usually means the page is open in the iPhone Files <em>preview</em>, which can't run interactive pages. Open the file in a real web browser instead — see the notes at the bottom of the file's instructions, or add it to your Home Screen.
@@ -477,24 +630,49 @@
       <button id="importBtn" class="btn btn-ghost">⬇ Import progress</button>
     </div>
 
-    <div class="section-label">Study mode</div>
-    <div id="modeList" class="modes"></div>
-
-    <div class="section-label">Modules</div>
-    <div id="moduleList" class="modules"></div>
-
-    <div class="section-label">Options</div>
-    <div class="toggle-row">
-      <label class="switch"><input type="checkbox" id="shuffleToggle" checked /><span class="slider"></span></label>
-      <span>Shuffle question order</span>
-    </div>
-    <div class="toggle-row">
-      <label class="switch"><input type="checkbox" id="shuffleOpts" checked /><span class="slider"></span></label>
-      <span>Shuffle answer choices</span>
+    <!-- Theory / Practical tabs -->
+    <div class="tabs" role="tablist" aria-label="Study mode">
+      <button id="tabTheory" class="tab selected" role="tab" aria-selected="true" aria-controls="theoryTab">
+        <span class="tab-name">Theory</span><span class="tab-sub">flashcards</span>
+      </button>
+      <button id="tabPractical" class="tab" role="tab" aria-selected="false" aria-controls="practicalTab">
+        <span class="tab-name">Practical</span><span class="tab-sub">write SQL</span>
+      </button>
     </div>
 
-    <button id="startBtn" class="btn btn-primary">Start smart review →</button>
-    <p id="startNote"></p>
+    <!-- THEORY (flashcards) -->
+    <div id="theoryTab" class="tab-panel" role="tabpanel" aria-labelledby="tabTheory">
+      <p class="lead">Multiple-choice flashcards to lock in the cheatsheets. Each card is asked a different way — and with differently-worded answers — each time you study. Pick what to study, then go.</p>
+
+      <div class="section-label">Study mode</div>
+      <div id="modeList" class="modes"></div>
+
+      <div class="section-label">Modules</div>
+      <div id="moduleList" class="modules"></div>
+
+      <div class="section-label">Options</div>
+      <div class="toggle-row">
+        <label class="switch"><input type="checkbox" id="shuffleToggle" checked /><span class="slider"></span></label>
+        <span>Shuffle question order</span>
+      </div>
+      <div class="toggle-row">
+        <label class="switch"><input type="checkbox" id="shuffleOpts" checked /><span class="slider"></span></label>
+        <span>Shuffle answer choices</span>
+      </div>
+
+      <button id="startBtn" class="btn btn-primary">Start smart review →</button>
+      <p id="startNote"></p>
+    </div>
+
+    <!-- PRACTICAL (SQL practice) -->
+    <div id="practicalTab" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabPractical">
+      <p class="lead">Write <b>real SQL</b> against a sample database — it runs in your browser and is checked for you. Pick a set, then practise.</p>
+
+      <div class="section-label">Practice sets</div>
+      <div id="practiceList" class="practice-list"></div>
+      <button id="practiceBtn" class="btn btn-primary">Practice SQL →</button>
+      <p id="practiceNote"></p>
+    </div>
   </section>
 
   <!-- QUIZ SCREEN -->
@@ -534,6 +712,46 @@
     </div>
 
     <div id="missedList" class="missed-list"></div>
+  </section>
+
+  <!-- SQL PRACTICE SCREEN -->
+  <section id="practiceScreen" class="panel hidden">
+    <div class="quiz-head">
+      <span id="pProgress">Task 1 of 1</span>
+      <span id="pScore">Solved: 0</span>
+    </div>
+    <div class="progress"><div id="pProgressBar"></div></div>
+
+    <span id="pTag" class="qtag">SQL Practice</span>
+    <h2 id="taskName" class="question"></h2>
+    <p id="taskPrompt" class="task-prompt"></p>
+
+    <details id="schemaBox" class="schema-box" open>
+      <summary>Schema &amp; sample data</summary>
+      <div id="schemaTables" class="schema-tables"></div>
+    </details>
+
+    <textarea id="sqlInput" class="sql-input" spellcheck="false" autocapitalize="off"
+              autocorrect="off" autocomplete="off" placeholder="Write your SQL here…"></textarea>
+
+    <div class="practice-actions">
+      <button id="runBtn" class="btn btn-primary">Run ▶</button>
+      <button id="solutionBtn" class="btn btn-ghost">Show solution</button>
+    </div>
+
+    <div id="sqlResult" class="sql-result"></div>
+
+    <div id="taskVerdict" class="explain">
+      <div id="taskVerdictText" class="verdict"></div>
+      <div id="taskExplain" style="margin-top:6px;"></div>
+      <div id="taskSolution" class="task-solution"></div>
+      <button id="markCorrectBtn" class="btn btn-ghost">Mark correct anyway</button>
+    </div>
+
+    <div class="quiz-foot">
+      <a href="#" id="quitPractice" class="backlink">← Back to menu</a>
+      <button id="nextTaskBtn" class="btn btn-primary hidden" style="width:auto; margin:0;">Next →</button>
+    </div>
   </section>
 
   <footer class="foot">
@@ -1845,6 +2063,243 @@ const MODULES = [
 ];
 
 /* =========================================================================
+   SQL PRACTICE — write-and-run tasks (real SQLite, via sql.js)
+   Each task carries a self-contained DB `setup` (DDL + seed), a reference
+   `solution`, and grading metadata. Grading compares RESULT SETS, not query
+   text, so any equivalent query passes. Mutation tasks (CREATE/INSERT/UPDATE/…)
+   set `verify` — a SELECT run after the user's statements — and we compare the
+   resulting DB state to the solution's. Sample ratings & years are kept unique
+   so ORDER BY / LIMIT tasks have a single deterministic answer. Progress feeds
+   the same Leitner SRS via each task's `id` (all prefixed "sqlt-").
+   ========================================================================= */
+const CELEBS = `CREATE TABLE celebs (id INTEGER, name TEXT, age INTEGER);
+INSERT INTO celebs VALUES (1,'Justin Bieber',22),(2,'Beyonce Knowles',39),(3,'Jeremy Lin',32),(4,'Taylor Swift',33);`;
+const CELEBS_EMPTY = `CREATE TABLE celebs (id INTEGER, name TEXT, age INTEGER);`;
+
+const MOVIES = `CREATE TABLE movies (id INTEGER, name TEXT, genre TEXT, year INTEGER, imdb_rating REAL);
+INSERT INTO movies VALUES
+ (1,'Avatar','action',2009,7.9),
+ (2,'Jurassic World','action',2015,7.0),
+ (3,'The Avengers','action',2012,8.1),
+ (4,'The Dark Knight','action',2008,9.0),
+ (5,'Toy Story','comedy',1995,8.3),
+ (6,'Shrek','comedy',2001,7.6),
+ (7,'Up','comedy',2013,8.2),
+ (8,'Titanic','romance',1997,7.8),
+ (9,'The Notebook','romance',2004,7.4),
+ (10,'The Lion King','drama',1994,8.5),
+ (11,'Forrest Gump','drama',1996,8.7),
+ (12,'Inception','action',2010,8.8);`;
+const MOVIES_NULLS = `CREATE TABLE movies (id INTEGER, name TEXT, genre TEXT, year INTEGER, imdb_rating REAL);
+INSERT INTO movies VALUES
+ (1,'Avatar','action',2009,7.9),
+ (2,'Jurassic World','action',2015,NULL),
+ (3,'The Avengers','action',2012,8.1),
+ (4,'Mystery Reel','drama',2018,NULL),
+ (5,'Toy Story','comedy',1995,8.3);`;
+
+const MANIP = "SQL Practice · Manipulation";
+const QUERY = "SQL Practice · Queries";
+
+const SQL_TASKS = [
+  /* ---- Manipulation (celebs theme) ---- */
+  {
+    id: "sqlt-m-create", group: MANIP, name: "CREATE TABLE", tables: [], setup: "",
+    prompt: "Create a table named celebs with three columns: id (INTEGER), name (TEXT), and age (INTEGER).",
+    solution: "CREATE TABLE celebs (id INTEGER, name TEXT, age INTEGER);",
+    verify: "SELECT name, UPPER(type) AS type FROM pragma_table_info('celebs');",
+    hint: "CREATE TABLE name (col TYPE, col TYPE, …);",
+    explain: "CREATE TABLE makes a new table, listing each column name with its datatype inside parentheses."
+  },
+  {
+    id: "sqlt-m-insert", group: MANIP, name: "INSERT INTO", tables: ["celebs"], setup: CELEBS_EMPTY,
+    prompt: "The celebs table exists but is empty. Insert one row — id 1, name 'Justin Bieber', age 22 — naming the columns explicitly.",
+    solution: "INSERT INTO celebs (id, name, age) VALUES (1, 'Justin Bieber', 22);",
+    verify: "SELECT * FROM celebs;",
+    hint: "INSERT INTO table (cols…) VALUES (vals…);",
+    explain: "INSERT INTO adds a new row; listing columns maps each value to a named column."
+  },
+  {
+    id: "sqlt-m-select", group: MANIP, name: "SELECT a column", tables: ["celebs"], setup: CELEBS, verify: null,
+    prompt: "Query just the name of every celeb in the celebs table.",
+    solution: "SELECT name FROM celebs;",
+    hint: "SELECT column FROM table;",
+    explain: "SELECT retrieves data; name the column(s) you want after SELECT."
+  },
+  {
+    id: "sqlt-m-select-all", group: MANIP, name: "SELECT *", tables: ["celebs"], setup: CELEBS, verify: null,
+    prompt: "Return every column for every row in the celebs table.",
+    solution: "SELECT * FROM celebs;",
+    hint: "The * wildcard means 'all columns'.",
+    explain: "SELECT * returns all columns for all rows — the asterisk is the 'all columns' wildcard."
+  },
+  {
+    id: "sqlt-m-alter", group: MANIP, name: "ALTER TABLE ADD COLUMN", tables: ["celebs"], setup: CELEBS,
+    prompt: "Add a new column called twitter_handle (TEXT) to the existing celebs table.",
+    solution: "ALTER TABLE celebs ADD COLUMN twitter_handle TEXT;",
+    verify: "SELECT name, UPPER(type) AS type FROM pragma_table_info('celebs');",
+    hint: "ALTER TABLE table ADD COLUMN name TYPE;",
+    explain: "ALTER TABLE … ADD COLUMN adds a new column (with its datatype) to a table that already exists."
+  },
+  {
+    id: "sqlt-m-update", group: MANIP, name: "UPDATE … SET … WHERE", tables: ["celebs"], setup: CELEBS,
+    prompt: "Taylor Swift (id 4) just had a birthday. Update her age to 34.",
+    solution: "UPDATE celebs SET age = 34 WHERE id = 4;",
+    verify: "SELECT * FROM celebs;",
+    hint: "UPDATE table SET col = val WHERE …;",
+    explain: "UPDATE edits existing rows: SET gives the new value(s); WHERE picks which rows change."
+  },
+  {
+    id: "sqlt-m-delete", group: MANIP, name: "DELETE … WHERE", tables: ["celebs"], setup: CELEBS,
+    prompt: "Remove the celeb with id 3 from the table.",
+    solution: "DELETE FROM celebs WHERE id = 3;",
+    verify: "SELECT * FROM celebs;",
+    hint: "DELETE FROM table WHERE …;",
+    explain: "DELETE removes rows; the WHERE clause controls which rows are removed."
+  },
+  {
+    id: "sqlt-m-delete-all", group: MANIP, name: "DELETE all rows", tables: ["celebs"], setup: CELEBS,
+    prompt: "Empty the celebs table completely — remove every row, but keep the table itself.",
+    solution: "DELETE FROM celebs;",
+    verify: "SELECT COUNT(*) AS remaining FROM celebs;",
+    hint: "A DELETE with no WHERE removes every row.",
+    explain: "Without a WHERE clause, DELETE removes ALL rows from the table (the table itself remains)."
+  },
+  {
+    id: "sqlt-m-pk", group: MANIP, name: "PRIMARY KEY", tables: [], setup: "",
+    prompt: "Create a table awards with columns id (INTEGER) as the PRIMARY KEY, recipient (TEXT), and category (TEXT).",
+    solution: "CREATE TABLE awards (id INTEGER PRIMARY KEY, recipient TEXT, category TEXT);",
+    verify: "SELECT name, pk FROM pragma_table_info('awards');",
+    hint: "Add PRIMARY KEY after the column's datatype.",
+    explain: "PRIMARY KEY uniquely identifies each row; a table can have only one, and its values must be unique and non-null."
+  },
+  {
+    id: "sqlt-m-unique", group: MANIP, name: "UNIQUE", tables: [], setup: "",
+    prompt: "Create a table artists with id (INTEGER) and email (TEXT) where every email must be different (UNIQUE).",
+    solution: "CREATE TABLE artists (id INTEGER, email TEXT UNIQUE);",
+    verify: "SELECT origin FROM pragma_index_list('artists');",
+    hint: "Add the UNIQUE keyword after the column's datatype.",
+    explain: "UNIQUE ensures all values in a column differ across rows. Unlike PRIMARY KEY, a table can have many UNIQUE columns."
+  },
+  {
+    id: "sqlt-m-notnull", group: MANIP, name: "NOT NULL", tables: [], setup: "",
+    prompt: "Create a table members with id (INTEGER) and username (TEXT) that can never be empty (NOT NULL).",
+    solution: "CREATE TABLE members (id INTEGER, username TEXT NOT NULL);",
+    verify: "SELECT name, [notnull] FROM pragma_table_info('members');",
+    hint: "Add NOT NULL after the column's datatype.",
+    explain: "NOT NULL requires a column to always have a value — a row cannot be added with NULL in that column."
+  },
+  {
+    id: "sqlt-m-default", group: MANIP, name: "DEFAULT", tables: [], setup: "",
+    prompt: "Create a table accounts with id (INTEGER) and status (TEXT) that defaults to 'active' when no value is given.",
+    solution: "CREATE TABLE accounts (id INTEGER, status TEXT DEFAULT 'active');",
+    verify: "SELECT name, dflt_value FROM pragma_table_info('accounts');",
+    hint: "Use DEFAULT 'active' after the datatype.",
+    explain: "DEFAULT assigns a preset value to a column when no value is given during INSERT."
+  },
+
+  /* ---- Queries (movies theme) ---- */
+  {
+    id: "sqlt-q-cols", group: QUERY, name: "Select specific columns", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Return only the name and year columns from the movies table.",
+    solution: "SELECT name, year FROM movies;",
+    hint: "List the columns after SELECT, comma-separated.",
+    explain: "List column names after SELECT (comma-separated) to return only those columns."
+  },
+  {
+    id: "sqlt-q-as", group: QUERY, name: "AS (alias)", tables: ["movies"], setup: MOVIES, verify: null, checkColumns: true,
+    prompt: "Select the name column, but label it title in the result, using AS.",
+    solution: "SELECT name AS title FROM movies;",
+    hint: "SELECT column AS alias FROM table;",
+    explain: "AS creates an alias — it renames a column in the result for readability without changing the data."
+  },
+  {
+    id: "sqlt-q-distinct", group: QUERY, name: "DISTINCT", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "List each distinct genre in the movies table, with no duplicates.",
+    solution: "SELECT DISTINCT genre FROM movies;",
+    hint: "SELECT DISTINCT column FROM table;",
+    explain: "DISTINCT returns only the unique values of a column, filtering out duplicate rows."
+  },
+  {
+    id: "sqlt-q-where", group: QUERY, name: "WHERE", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Select all columns for every movie released after the year 2010.",
+    solution: "SELECT * FROM movies WHERE year > 2010;",
+    hint: "Add WHERE year > 2010 after the table.",
+    explain: "WHERE filters rows to those matching a condition, using comparison operators like >, <, =."
+  },
+  {
+    id: "sqlt-q-like-pct", group: QUERY, name: "LIKE with %", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Find the name of every movie whose title begins with 'The'.",
+    solution: "SELECT name FROM movies WHERE name LIKE 'The%';",
+    hint: "% matches zero or more characters: 'The%'.",
+    explain: "LIKE matches a text pattern; % is a wildcard for zero or more characters, so 'The%' matches anything starting with 'The'."
+  },
+  {
+    id: "sqlt-q-like-us", group: QUERY, name: "LIKE with _", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Use the _ wildcard to find the name that is a single character followed by 'hrek'.",
+    solution: "SELECT name FROM movies WHERE name LIKE '_hrek';",
+    hint: "_ matches exactly one character: '_hrek'.",
+    explain: "The _ wildcard matches exactly one character, so '_hrek' matches a single character followed by 'hrek' (Shrek)."
+  },
+  {
+    id: "sqlt-q-between", group: QUERY, name: "BETWEEN", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Select all movies released between 1994 and 2000, inclusive.",
+    solution: "SELECT * FROM movies WHERE year BETWEEN 1994 AND 2000;",
+    hint: "WHERE year BETWEEN 1994 AND 2000.",
+    explain: "BETWEEN filters by a range and is inclusive of both endpoints."
+  },
+  {
+    id: "sqlt-q-and", group: QUERY, name: "AND", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Select all action movies released after 2010 (genre is action AND year > 2010).",
+    solution: "SELECT * FROM movies WHERE genre = 'action' AND year > 2010;",
+    hint: "Combine two conditions with AND.",
+    explain: "AND combines conditions so a row matches only when all of them are true."
+  },
+  {
+    id: "sqlt-q-or", group: QUERY, name: "OR", tables: ["movies"], setup: MOVIES, verify: null,
+    prompt: "Select all movies that are either comedy or romance.",
+    solution: "SELECT * FROM movies WHERE genre = 'comedy' OR genre = 'romance';",
+    hint: "Combine two conditions with OR.",
+    explain: "OR combines conditions so a row matches if at least one of them is true."
+  },
+  {
+    id: "sqlt-q-null", group: QUERY, name: "IS NULL", tables: ["movies"], setup: MOVIES_NULLS, verify: null,
+    prompt: "Some movies have no rating yet. Select the name of every movie whose imdb_rating IS NULL.",
+    solution: "SELECT name FROM movies WHERE imdb_rating IS NULL;",
+    hint: "Test missing values with IS NULL, not = NULL.",
+    explain: "Use IS NULL / IS NOT NULL to test for missing values — you can't compare to NULL with =."
+  },
+  {
+    id: "sqlt-q-order", group: QUERY, name: "ORDER BY", tables: ["movies"], setup: MOVIES, verify: null, ordered: true,
+    prompt: "Select all movies ordered by year, oldest first.",
+    solution: "SELECT * FROM movies ORDER BY year;",
+    hint: "ORDER BY year sorts ascending by default.",
+    explain: "ORDER BY sorts the result rows by a column; ascending (ASC) is the default."
+  },
+  {
+    id: "sqlt-q-desc", group: QUERY, name: "ORDER BY … DESC", tables: ["movies"], setup: MOVIES, verify: null, ordered: true,
+    prompt: "Select the name and imdb_rating of all movies, highest rating first.",
+    solution: "SELECT name, imdb_rating FROM movies ORDER BY imdb_rating DESC;",
+    hint: "Add DESC after the column to sort high → low.",
+    explain: "Add DESC after the column in ORDER BY to sort descending (high → low)."
+  },
+  {
+    id: "sqlt-q-limit", group: QUERY, name: "LIMIT", tables: ["movies"], setup: MOVIES, verify: null, ordered: true,
+    prompt: "Return the names of the 3 highest-rated movies (use ORDER BY and LIMIT).",
+    solution: "SELECT name FROM movies ORDER BY imdb_rating DESC LIMIT 3;",
+    hint: "ORDER BY … DESC LIMIT 3.",
+    explain: "LIMIT caps the result to a set number of rows; combine with ORDER BY to get a top-N list."
+  },
+  {
+    id: "sqlt-q-case", group: QUERY, name: "CASE", tables: ["movies"], setup: MOVIES, verify: null, checkColumns: true,
+    prompt: "Select each movie's name and a second column called label that is 'Excellent' when imdb_rating > 8, otherwise 'Good'. Use CASE.",
+    solution: "SELECT name, CASE WHEN imdb_rating > 8 THEN 'Excellent' ELSE 'Good' END AS label FROM movies;",
+    hint: "CASE WHEN … THEN … ELSE … END AS label.",
+    explain: "CASE adds if/then logic inside a query: CASE WHEN condition THEN result ELSE result END; END closes it."
+  }
+];
+
+/* =========================================================================
    APP LOGIC
    ========================================================================= */
 const $ = (id) => document.getElementById(id);
@@ -2026,10 +2481,12 @@ function renderProgressSummary() {
   const { mastered, total } = masteryStats();
   const pct = total ? Math.round((mastered / total) * 100) : 0;
   const due = dueCount(allCards(), Date.now());
+  const sp = practiceStats();
   $("progressSummary").innerHTML = `
     <div class="stat"><span class="v">${pct}%</span><span class="l">Mastered</span></div>
     <div class="stat"><span class="v">${mastered}/${total}</span><span class="l">Cards</span></div>
     <div class="stat"><span class="v">${due}</span><span class="l">Due now</span></div>
+    <div class="stat"><span class="v">${sp.mastered}/${sp.total}</span><span class="l">SQL tasks</span></div>
     <div class="stat"><span class="v">${DATA.best || 0}%</span><span class="l">Best quiz</span></div>`;
 }
 
@@ -2042,7 +2499,10 @@ function refreshStart() {
   renderProgressSummary();
   renderModes();
   renderModules();
+  renderPractice();
   updateStartLabel();
+  updateTabBadges();
+  applyTab();
   $("startBtn").disabled = selectedModules.size === 0;
 }
 
@@ -2119,6 +2579,8 @@ function startQuiz(questions) {
   current = 0;
   score = 0;
   missed = [];
+  sessionType = "quiz";
+  activeTab = "theory";
   show("quizScreen");
   renderQuestion();
 }
@@ -2238,9 +2700,324 @@ function updateBest() {
   $("bestScore").textContent = DATA.best ? DATA.best + "%" : "—";
 }
 
+/* =========================================================================
+   SQL PRACTICE FLOW
+   ========================================================================= */
+let selectedPractice = new Set();          // chosen practice groups
+let practiceTasks = [];
+let pCurrent = 0, pSolved = 0, pMissed = [];
+let taskRecorded = false, taskCorrect = false;
+let SQLENGINE = null;                       // resolved sql.js module
+let sessionType = "quiz";                    // "quiz" | "practice" — which session the result screen belongs to
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+}
+
+/* distinct practice groups, in first-seen order */
+function practiceGroups() {
+  const order = [];
+  SQL_TASKS.forEach(t => { if (!order.includes(t.group)) order.push(t.group); });
+  return order;
+}
+practiceGroups().forEach(g => selectedPractice.add(g));   // default: all selected
+
+function practiceStats() {
+  let mastered = 0;
+  SQL_TASKS.forEach(t => { const r = DATA.srs[t.id]; if (r && r.box >= 4) mastered++; });
+  return { mastered, total: SQL_TASKS.length };
+}
+
+/* ---- Theory / Practical tabs on the start screen ---- */
+let activeTab = "theory";                    // "theory" | "practical"
+function applyTab() {
+  $("tabTheory").classList.toggle("selected", activeTab === "theory");
+  $("tabPractical").classList.toggle("selected", activeTab === "practical");
+  $("tabTheory").setAttribute("aria-selected", activeTab === "theory");
+  $("tabPractical").setAttribute("aria-selected", activeTab === "practical");
+  $("theoryTab").classList.toggle("hidden", activeTab !== "theory");
+  $("practicalTab").classList.toggle("hidden", activeTab !== "practical");
+}
+function selectTab(t) { activeTab = t; applyTab(); }
+function updateTabBadges() {
+  const now = Date.now();
+  const cardsDue = dueCount(allCards(), now);
+  const tasksDue = SQL_TASKS.filter(t => isDue(t.id, now)).length;
+  $("tabTheory").querySelector(".tab-sub").textContent = cardsDue ? `${cardsDue} due` : "flashcards";
+  $("tabPractical").querySelector(".tab-sub").textContent = tasksDue ? `${tasksDue} due` : "write SQL";
+}
+
+/* ---- Lazy-load the SQLite engine (sql.js), only when first needed ---- */
+let _sqlReady = null;
+function ensureSql() {
+  if (_sqlReady) return _sqlReady;
+  _sqlReady = new Promise((resolve, reject) => {
+    const init = () => initSqlJs({ locateFile: f => "vendor/" + f }).then(resolve, reject);
+    if (typeof initSqlJs === "function") { init(); return; }
+    const s = document.createElement("script");
+    s.src = "vendor/sql-wasm.js";
+    s.onload = init;
+    s.onerror = () => reject(new Error("Couldn't load the SQL engine (vendor/sql-wasm.js). Check your connection and try again."));
+    document.head.appendChild(s);
+  });
+  return _sqlReady;
+}
+
+/* ---- Run SQL against a fresh in-memory DB (so attempts never accumulate) ---- */
+function lastRes(res) { return (res && res.length) ? res[res.length - 1] : null; }
+function runSql(SQL, setup, sql) {
+  const db = new SQL.Database();
+  let res = null, err = null;
+  try { if (setup) db.run(setup); res = db.exec(sql); }
+  catch (e) { err = e.message; }
+  db.close();
+  return { res, err };
+}
+function runSeq(SQL, sqls) {              // run statements in order on one DB; return last result set
+  const db = new SQL.Database();
+  let last = null, err = null;
+  try {
+    for (const s of sqls) { if (!s) continue; const r = db.exec(s); if (r && r.length) last = r[r.length - 1]; }
+  } catch (e) { err = e.message; }
+  db.close();
+  return { last, err };
+}
+
+/* ---- Compare two result sets (order-insensitive unless task.ordered) ---- */
+function normRows(res, ordered) {
+  if (!res || !res.values) return [];
+  const rows = res.values.map(r => r.map(c => (c === null ? "␀NULL" : String(c))));
+  if (!ordered) rows.sort((a, b) => (a.join("") < b.join("") ? -1 : 1));
+  return rows;
+}
+function sameResult(a, b, task) {
+  const ra = normRows(a, task.ordered), rb = normRows(b, task.ordered);
+  if (ra.length !== rb.length) return false;
+  for (let i = 0; i < ra.length; i++) {
+    if (ra[i].length !== rb[i].length) return false;
+    for (let j = 0; j < ra[i].length; j++) if (ra[i][j] !== rb[i][j]) return false;
+  }
+  if (task.checkColumns) {
+    const ca = (a && a.columns) || [], cb = (b && b.columns) || [];
+    if (ca.length !== cb.length) return false;
+    for (let i = 0; i < ca.length; i++)
+      if (String(ca[i]).toLowerCase() !== String(cb[i]).toLowerCase()) return false;
+  }
+  return true;
+}
+
+/* ---- Grade one attempt. Returns { correct, result?, error?, expected? } ---- */
+function gradeTask(SQL, task, userSql) {
+  if (task.verify) {                       // mutation task: compare resulting DB state
+    const u = runSeq(SQL, [task.setup, userSql, task.verify]);
+    if (u.err) return { correct: false, error: u.err };
+    const s = runSeq(SQL, [task.setup, task.solution, task.verify]);
+    return { correct: sameResult(u.last, s.last, task), result: u.last, expected: s.last };
+  }
+  const u = runSql(SQL, task.setup, userSql);   // SELECT task: compare query output
+  if (u.err) return { correct: false, error: u.err };
+  const s = runSql(SQL, task.setup, task.solution);
+  return { correct: sameResult(lastRes(u.res), lastRes(s.res), task), result: lastRes(u.res), expected: lastRes(s.res) };
+}
+
+/* ---- Render a result set as an HTML table ---- */
+function dataTable(res) {
+  if (!res || !res.columns || !res.columns.length) return `<div class="table-empty">No rows returned.</div>`;
+  let html = `<div class="data-table-wrap"><table class="data-table"><thead><tr>`;
+  res.columns.forEach(c => html += `<th>${escapeHtml(c)}</th>`);
+  html += `</tr></thead><tbody>`;
+  (res.values || []).forEach(row => {
+    html += "<tr>";
+    row.forEach(cell => html += (cell === null ? `<td class="null">NULL</td>` : `<td>${escapeHtml(cell)}</td>`));
+    html += "</tr>";
+  });
+  if (!res.values || !res.values.length) html += `<tr><td class="null" colspan="${res.columns.length}">(no rows)</td></tr>`;
+  return html + `</tbody></table></div>`;
+}
+
+/* ---- Schema + sample-data preview for the current task ---- */
+function renderSchema(SQL, task) {
+  const box = $("schemaTables");
+  if (!task.tables || !task.tables.length) {
+    box.innerHTML = `<div class="table-empty">You're starting from an empty database — create what the task asks for.</div>`;
+    return;
+  }
+  const db = new SQL.Database();
+  if (task.setup) db.run(task.setup);
+  let html = "";
+  task.tables.forEach(t => {
+    let cols = [];
+    try { const ci = db.exec(`SELECT name FROM pragma_table_info('${t}')`); cols = ci.length ? ci[0].values.map(r => r[0]) : []; } catch (e) {}
+    let rows = null;
+    try { rows = lastRes(db.exec(`SELECT * FROM ${t}`)); } catch (e) {}
+    html += `<div class="tname">${escapeHtml(t)}</div>` + dataTable(rows || { columns: cols, values: [] });
+  });
+  db.close();
+  box.innerHTML = html;
+}
+
+/* ---- Build the task list for the selected sets (due first, weakest first) ---- */
+function buildTasks() {
+  const now = Date.now();
+  let tasks = SQL_TASKS.filter(t => selectedPractice.has(t.group));
+  let due = tasks.filter(t => isDue(t.id, now));
+  if (!due.length) {                       // nothing due — surface the soonest few to drill ahead
+    due = tasks.slice().sort((a, b) => getRec(a.id).due - getRec(b.id).due).slice(0, Math.min(8, tasks.length));
+  }
+  return due.sort((a, b) => (getRec(a.id).box - getRec(b.id).box) || (getRec(a.id).due - getRec(b.id).due));
+}
+
+function startPractice(tasks) {
+  practiceTasks = tasks;
+  pCurrent = 0; pSolved = 0; pMissed = [];
+  sessionType = "practice";
+  activeTab = "practical";
+  show("practiceScreen");
+  $("schemaTables").innerHTML = "";
+  $("sqlResult").innerHTML = `<div class="result-label">Loading the SQL engine…</div>`;
+  $("taskVerdict").classList.remove("show");
+  $("nextTaskBtn").classList.add("hidden");
+  ensureSql()
+    .then(SQL => { SQLENGINE = SQL; $("sqlResult").innerHTML = ""; renderTask(); })
+    .catch(err => { $("sqlResult").innerHTML = `<div class="sql-error">${escapeHtml(err.message)}</div>`; });
+}
+
+function renderTask() {
+  const task = practiceTasks[pCurrent];
+  taskRecorded = false; taskCorrect = false;
+  $("pProgress").textContent = `Task ${pCurrent + 1} of ${practiceTasks.length}`;
+  $("pScore").textContent = `Solved: ${pSolved}`;
+  $("pProgressBar").style.width = `${(pCurrent / practiceTasks.length) * 100}%`;
+  $("pTag").textContent = task.group.replace("SQL Practice · ", "SQL · ");
+  $("taskName").textContent = task.name;
+  $("taskPrompt").textContent = task.prompt;
+  $("sqlInput").value = "";
+  $("sqlResult").innerHTML = "";
+  $("taskVerdict").classList.remove("show");
+  $("nextTaskBtn").classList.add("hidden");
+  $("markCorrectBtn").style.display = "none";
+  renderSchema(SQLENGINE, task);
+}
+
+function runTask() {
+  if (!SQLENGINE) return;
+  const task = practiceTasks[pCurrent];
+  const sql = $("sqlInput").value.trim();
+  if (!sql) { $("sqlResult").innerHTML = `<div class="result-label">Write a query first.</div>`; return; }
+  const g = gradeTask(SQLENGINE, task, sql);
+  if (g.error) {
+    $("sqlResult").innerHTML = `<div class="result-label">SQLite error</div><div class="sql-error">${escapeHtml(g.error)}</div>`;
+  } else {
+    $("sqlResult").innerHTML = `<div class="result-label">Your result</div>` + dataTable(g.result);
+  }
+  revealOutcome(task, !!g.correct);
+}
+
+function revealOutcome(task, correct) {
+  taskCorrect = correct;
+  const v = $("taskVerdictText");
+  v.className = "verdict " + (correct ? "ok" : "no");
+  v.textContent = correct ? "Correct! 🎉" : "Not quite — compare with the solution below.";
+  $("taskExplain").innerHTML = task.explain;
+  $("taskSolution").innerHTML = `<span class="sol-label">Reference solution</span>${escapeHtml(task.solution)}`;
+  $("taskVerdict").classList.add("show");
+  $("nextTaskBtn").classList.remove("hidden");
+  $("markCorrectBtn").style.display = correct ? "none" : "inline-flex";
+  if (!taskRecorded) {
+    taskRecorded = true;
+    recordResult(task.id, correct);          // feed the Leitner SRS (first attempt counts)
+    if (correct) { pSolved++; $("pScore").textContent = `Solved: ${pSolved}`; }
+    else pMissed.push(task);
+  }
+}
+
+function showSolution() {
+  const task = practiceTasks[pCurrent];
+  if (!taskRecorded) revealOutcome(task, false);   // revealing before solving counts as a miss
+  else { $("taskVerdict").classList.add("show"); $("nextTaskBtn").classList.remove("hidden"); }
+}
+
+function markCorrect() {                       // safety valve for a valid alternative the checker didn't anticipate
+  const task = practiceTasks[pCurrent];
+  if (taskCorrect) return;
+  taskCorrect = true;
+  recordResult(task.id, true);
+  const idx = pMissed.indexOf(task);
+  if (idx > -1) pMissed.splice(idx, 1);
+  pSolved++; $("pScore").textContent = `Solved: ${pSolved}`;
+  const v = $("taskVerdictText"); v.className = "verdict ok"; v.textContent = "Marked correct ✓";
+  $("markCorrectBtn").style.display = "none";
+}
+
+function nextTask() {
+  pCurrent++;
+  if (pCurrent >= practiceTasks.length) finishPractice();
+  else renderTask();
+}
+
+function finishPractice() {
+  $("pProgressBar").style.width = "100%";
+  const total = practiceTasks.length;
+  const pct = total ? Math.round((pSolved / total) * 100) : 0;
+  $("finalPct").textContent = pct;
+  $("finalRaw").textContent = `${pSolved} / ${total}`;
+
+  let msg;
+  if (pct === 100) msg = "Every query ran clean — you're writing SQL, not just recognising it. 🎯";
+  else if (pct >= 80) msg = "Strong — most queries landed. Review the misses and run it back.";
+  else if (pct >= 50) msg = "Solid start. Writing SQL is a muscle — keep at the misses below.";
+  else msg = "Early reps. Review the solutions below, then try again — repetition wins.";
+  $("resultMsg").textContent = msg;
+
+  $("missedCount").textContent = pMissed.length;
+  $("retryMissedBtn").disabled = pMissed.length === 0;
+  $("retryMissedBtn").style.opacity = pMissed.length === 0 ? "0.5" : "1";
+
+  const ml = $("missedList");
+  ml.innerHTML = "";
+  if (pMissed.length) {
+    const head = document.createElement("div");
+    head.className = "section-label";
+    head.textContent = "Tasks to revisit";
+    ml.appendChild(head);
+    pMissed.forEach(task => {
+      const item = document.createElement("div");
+      item.className = "missed-item";
+      item.innerHTML = `
+        <div class="mq">${escapeHtml(task.name)}</div>
+        <div class="ma">${escapeHtml(task.prompt)}<br><span class="good">${escapeHtml(task.solution)}</span></div>`;
+      ml.appendChild(item);
+    });
+  }
+
+  show("resultScreen");
+}
+
+function renderPractice() {
+  const box = $("practiceList");
+  box.innerHTML = "";
+  const now = Date.now();
+  practiceGroups().forEach(g => {
+    const tasks = SQL_TASKS.filter(t => t.group === g);
+    const due = tasks.filter(t => isDue(t.id, now)).length;
+    const btn = document.createElement("button");
+    btn.className = "choice" + (selectedPractice.has(g) ? " selected" : "");
+    btn.innerHTML = `
+      <span><span class="check">✓ </span>${g.replace("SQL Practice · ", "")}</span>
+      <span class="count">${tasks.length} tasks${due ? ` · <b>${due} due</b>` : ""}</span>`;
+    btn.onclick = () => {
+      if (selectedPractice.has(g)) selectedPractice.delete(g); else selectedPractice.add(g);
+      btn.classList.toggle("selected");
+      $("practiceBtn").disabled = selectedPractice.size === 0;
+    };
+    box.appendChild(btn);
+  });
+  $("practiceBtn").disabled = selectedPractice.size === 0;
+}
+
 /* ---- Screen switching ---- */
 function show(id) {
-  ["startScreen", "quizScreen", "resultScreen"].forEach(s => {
+  ["startScreen", "quizScreen", "resultScreen", "practiceScreen"].forEach(s => {
     $(s).classList.toggle("hidden", s !== id);
   });
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2259,8 +3036,28 @@ $("startBtn").onclick = () => {
 $("nextBtn").onclick = nextQuestion;
 $("restartBtn").onclick = () => { refreshStart(); show("startScreen"); };
 $("retryMissedBtn").onclick = () => {
-  if (missed.length) startQuiz(shuffle(missed));
+  if (sessionType === "practice") { if (pMissed.length) startPractice(shuffle(pMissed)); }
+  else if (missed.length) startQuiz(shuffle(missed));
 };
+
+/* ---- Theory / Practical tab switch ---- */
+$("tabTheory").onclick = () => selectTab("theory");
+$("tabPractical").onclick = () => selectTab("practical");
+
+/* ---- SQL Practice events ---- */
+$("practiceBtn").onclick = () => {
+  const tasks = buildTasks();
+  if (tasks.length) { $("practiceNote").textContent = ""; startPractice(tasks); }
+  else $("practiceNote").textContent = "Pick at least one SQL set above to practise.";
+};
+$("runBtn").onclick = runTask;
+$("solutionBtn").onclick = showSolution;
+$("markCorrectBtn").onclick = markCorrect;
+$("nextTaskBtn").onclick = nextTask;
+$("quitPractice").onclick = (e) => { e.preventDefault(); refreshStart(); show("startScreen"); };
+$("sqlInput").addEventListener("keydown", (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); runTask(); }
+});
 $("resetBest").onclick = (e) => {
   e.preventDefault();
   DATA.best = 0;
