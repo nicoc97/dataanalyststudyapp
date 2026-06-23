@@ -268,6 +268,33 @@
      stretch to its container minus the indent (no overflow). */
   .modules .choice.sub { width: auto; margin-left: 14px; }
 
+  /* A module that offers "Claude's Further Studies" gets a swap toggle beside it.
+     The row carries the indent so the inner button keeps its own margin at 0. */
+  .module-row { display: flex; gap: 8px; align-items: stretch; margin-left: 14px; }
+  .module-row .choice.sub { margin-left: 0; flex: 1 1 auto; min-width: 0; }
+  .further-toggle {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.05s;
+  }
+  .further-toggle:hover { border-color: var(--accent); }
+  .further-toggle:active { transform: translateY(1px); }
+  .further-toggle.on {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #f8f3e8;
+  }
+
   .choice {
     display: flex;
     align-items: center;
@@ -728,10 +755,6 @@
       <div class="toggle-row">
         <label class="switch"><input type="checkbox" id="shuffleOpts" checked /><span class="slider"></span></label>
         <span>Shuffle answer choices</span>
-      </div>
-      <div class="toggle-row">
-        <label class="switch"><input type="checkbox" id="furtherToggle" /><span class="slider"></span></label>
-        <span>✦ Claude's Further Studies<br><span class="muted-sub">Bonus deep-dive cards on the tricky bits — GROUP BY &amp; HAVING</span></span>
       </div>
 
       <button id="startBtn" class="btn btn-primary">Study all cards →</button>
@@ -2920,6 +2943,7 @@ function masteryStats() {
 }
 
 let selectedModules = new Set(MODULES.map(m => m.id)); // default: all selected
+const furtherModules = new Set();                      // modules switched to "Claude's Further Studies" (swap deck; default: off, in-memory)
 const collapsedGroups = new Set();                     // module-group accordion state (default: all open)
 let studyMode = "all";                                  // all | weak
 let activeQuestions = [];
@@ -2982,17 +3006,47 @@ function renderModules() {
     byGroup[g].forEach(m => {
       const btn = document.createElement("button");
       btn.className = "choice sub" + (selectedModules.has(m.id) ? " selected" : "");
-      const bonus = m.further ? ` <b>+${m.further.length} bonus</b>` : "";
-      btn.innerHTML = `
-        <span><span class="check">✓ </span>${m.name}</span>
-        <span class="count">${m.questions.length} cards${bonus}</span>`;
+      const deckCount = () => (furtherModules.has(m.id) && m.further ? m.further.length : m.questions.length);
+      const renderBtn = () => {
+        btn.innerHTML = `
+          <span><span class="check">✓ </span>${m.name}</span>
+          <span class="count">${deckCount()} cards</span>`;
+      };
+      renderBtn();
       btn.onclick = () => {
         if (selectedModules.has(m.id)) selectedModules.delete(m.id);
         else selectedModules.add(m.id);
         btn.classList.toggle("selected");
         $("startBtn").disabled = selectedModules.size === 0;
       };
-      inner.appendChild(btn);
+
+      if (m.further) {
+        /* "Claude's Further Studies" — a per-module switch that SWAPS the deck:
+           on = study only the deeper recommended cards instead of the basic set. */
+        const row = document.createElement("div");
+        row.className = "module-row";
+        const fbtn = document.createElement("button");
+        fbtn.type = "button";
+        fbtn.className = "further-toggle" + (furtherModules.has(m.id) ? " on" : "");
+        fbtn.setAttribute("aria-pressed", String(furtherModules.has(m.id)));
+        fbtn.title = "Claude's Further Studies — swap in deeper cards (GROUP BY & HAVING) instead of the basic set";
+        fbtn.innerHTML = `✦ Further`;
+        fbtn.onclick = (e) => {
+          e.stopPropagation();
+          const on = !furtherModules.has(m.id);
+          if (on) { furtherModules.add(m.id); selectedModules.add(m.id); btn.classList.add("selected"); }
+          else furtherModules.delete(m.id);
+          fbtn.classList.toggle("on", on);
+          fbtn.setAttribute("aria-pressed", String(on));
+          renderBtn();
+          $("startBtn").disabled = selectedModules.size === 0;
+        };
+        row.appendChild(btn);
+        row.appendChild(fbtn);
+        inner.appendChild(row);
+      } else {
+        inner.appendChild(btn);
+      }
     });
     body.appendChild(inner);
     group.appendChild(body);
@@ -3044,22 +3098,17 @@ function pickVariant(card) {
 }
 
 function buildQuestions() {
-  /* gather candidate cards from the selected modules */
-  const ft = $("furtherToggle");
-  const includeFurther = !!(ft && ft.checked);   // "Claude's Further Studies" bonus deck
+  /* gather candidate cards from the selected modules. A module switched to
+     "Claude's Further Studies" SWAPS its deck — study its `further` cards
+     instead of the basic `questions`. */
   let cards = [];
   MODULES.forEach(m => {
     if (!selectedModules.has(m.id)) return;
-    m.questions.forEach(card => {
+    const deck = (furtherModules.has(m.id) && m.further && m.further.length) ? m.further : m.questions;
+    deck.forEach(card => {
       const id = cardId(m.id, card);
       cards.push({ m, card, id, rec: DATA.srs[id] });
     });
-    if (includeFurther && m.further) {
-      m.further.forEach(card => {
-        const id = cardId(m.id, card);
-        cards.push({ m, card, id, rec: DATA.srs[id] });
-      });
-    }
   });
 
   /* narrow by study mode ("all" keeps every selected card) */

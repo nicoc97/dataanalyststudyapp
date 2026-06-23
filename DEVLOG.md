@@ -2,6 +2,16 @@
 
 Newest first. **Claude:** read this at the start of a session for recent context, and add an entry here after making changes.
 
+## 2026-06-23 — "Claude's Further Studies": per-module toggle that *swaps* the deck
+Reworked the feature shipped earlier today (see next entry) per user feedback: instead of a single global *Options* toggle that **added** every module's bonus cards on top of the basics, the toggle now lives **beside the module it belongs to** and **swaps** that module's deck — toggle on = study *only* the deeper recommended cards; off = the basic set as usual.
+
+- **Removed** the global `#furtherToggle` from the *Options* section.
+- **Picker:** modules with a `further` array now render inside a `.module-row` flex wrapper — the selectable `.choice.sub` button plus a compact `.further-toggle` ("✦ Further") button beside it. State is the in-memory `furtherModules` Set (default off, like `collapsedGroups`). Clicking it: flips membership, **auto-selects the module** (so "study the further set" always has an effect), updates the `aria-pressed`/`.on` state, and rewrites the count badge to the active deck size (9 ⇄ 8). The "on" state uses the accent gradient + `#f8f3e8` text, matching the primary buttons.
+- **`buildQuestions`:** for each selected module, `deck = furtherModules.has(id) && m.further ? m.further : m.questions` — a clean swap, no concatenation. (Old additive `includeFurther` logic deleted.)
+- Mastery still tracks via stable `cardId`s; `further` cards still excluded from the headline totals.
+
+**Verified in-browser:** no console errors; exactly one "✦ Further" toggle, beside Aggregate Functions; OFF → 9 cards (basics present), ON → badge "8 cards" and `buildQuestions` returns the 8 *further* cards with **no basic cards** (true swap), toggle gains `.on`; toggling back restores 9. Responsive at 375px — module name wraps, toggle sits beside it, no horizontal overflow.
+
 ## 2026-06-23 — Learn SQL · Aggregate Functions module + "Claude's Further Studies" toggle
 Third Learn SQL module ([cheatsheet](https://www.codecademy.com/learn/paths/bi-data-analyst/tracks/dsf-learn-sql/modules/dsinf-learn-sql-aggregate-functions/cheatsheet)), plus a new opt-in bonus-deck mechanism the user asked for.
 
