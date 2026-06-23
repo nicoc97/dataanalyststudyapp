@@ -729,8 +729,12 @@
         <label class="switch"><input type="checkbox" id="shuffleOpts" checked /><span class="slider"></span></label>
         <span>Shuffle answer choices</span>
       </div>
+      <div class="toggle-row">
+        <label class="switch"><input type="checkbox" id="furtherToggle" /><span class="slider"></span></label>
+        <span>✦ Claude's Further Studies<br><span class="muted-sub">Bonus deep-dive cards on the tricky bits — GROUP BY &amp; HAVING</span></span>
+      </div>
 
-      <button id="startBtn" class="btn btn-primary">Start smart review →</button>
+      <button id="startBtn" class="btn btn-primary">Study all cards →</button>
       <p id="startNote"></p>
     </div>
 
@@ -2129,6 +2133,360 @@ const MODULES = [
         explain: "CASE adds if/then logic inside a query: CASE WHEN condition THEN result ... ELSE result END. The ELSE is optional, and END closes the statement."
       }
     ]
+  },
+  {
+    id: "sql-aggregates",
+    group: "Learn SQL",
+    name: "Aggregate Functions",
+    questions: [
+      {
+        variants: [
+          {
+            q: "What is an aggregate function?",
+            options: ["A function that computes a single value from many rows (e.g. COUNT, SUM, AVG)", "A function that adds a new column to a table", "A function that sorts rows", "A function that joins two tables"],
+            answer: 0
+          },
+          {
+            q: "Which of these is an aggregate function?",
+            options: ["SUM()", "LIKE", "BETWEEN", "DISTINCT"],
+            answer: 0
+          },
+          {
+            q: "Aggregate functions are used to:",
+            options: ["Summarise many rows into a single value", "Rename columns", "Filter rows by a text pattern", "Insert new rows"],
+            answer: 0
+          }
+        ],
+        explain: "Aggregate functions (calculations) take many rows and return a single summarising value — COUNT, SUM, MAX, MIN and AVG are the core ones."
+      },
+      {
+        variants: [
+          {
+            q: "What does `COUNT(*)` return?",
+            options: ["The number of rows", "The sum of a column", "The largest value", "The distinct values"],
+            answer: 0
+          },
+          {
+            q: "Which query counts how many movies are in the table?",
+            options: ["SELECT COUNT(*) FROM movies;", "SELECT SUM(*) FROM movies;", "SELECT TOTAL(movies);", "SELECT ROWS(movies);"],
+            answer: 0
+          },
+          {
+            q: "`COUNT()` is used to:",
+            options: ["Count the number of rows", "Average a column", "Round a number", "Order the rows"],
+            answer: 0
+          }
+        ],
+        explain: "COUNT() returns how many rows there are. COUNT(*) counts every row; COUNT(column) counts only rows where that column is not NULL."
+      },
+      {
+        variants: [
+          {
+            q: "What does `SUM(column)` do?",
+            options: ["Adds up all the values in that column", "Counts the rows", "Returns the largest value", "Returns the distinct values"],
+            answer: 0
+          },
+          {
+            q: "Which query returns the total of all downloads?",
+            options: ["SELECT SUM(downloads) FROM apps;", "SELECT COUNT(downloads) FROM apps;", "SELECT TOTAL downloads FROM apps;", "SELECT downloads SUM FROM apps;"],
+            answer: 0
+          },
+          {
+            q: "To add together every value in a numeric column, use:",
+            options: ["SUM()", "AVG()", "MAX()", "COUNT()"],
+            answer: 0
+          }
+        ],
+        explain: "SUM() adds up all the values in a numeric column and returns their total."
+      },
+      {
+        variants: [
+          {
+            q: "What does `MAX(column)` return?",
+            options: ["The largest value in the column", "The number of rows", "The total of the column", "The smallest value"],
+            answer: 0
+          },
+          {
+            q: "Which query finds the highest price?",
+            options: ["SELECT MAX(price) FROM apps;", "SELECT MIN(price) FROM apps;", "SELECT TOP(price) FROM apps;", "SELECT price MAX FROM apps;"],
+            answer: 0
+          },
+          {
+            q: "To get the biggest value in a column, use:",
+            options: ["MAX()", "MIN()", "SUM()", "COUNT()"],
+            answer: 0
+          }
+        ],
+        explain: "MAX() returns the largest value in a column."
+      },
+      {
+        variants: [
+          {
+            q: "What does `MIN(column)` return?",
+            options: ["The smallest value in the column", "The largest value", "The average", "The first row"],
+            answer: 0
+          },
+          {
+            q: "Which query finds the lowest rating?",
+            options: ["SELECT MIN(imdb_rating) FROM movies;", "SELECT MAX(imdb_rating) FROM movies;", "SELECT LOW(imdb_rating) FROM movies;", "SELECT imdb_rating MIN FROM movies;"],
+            answer: 0
+          },
+          {
+            q: "To get the smallest value in a column, use:",
+            options: ["MIN()", "MAX()", "AVG()", "SUM()"],
+            answer: 0
+          }
+        ],
+        explain: "MIN() returns the smallest value in a column."
+      },
+      {
+        variants: [
+          {
+            q: "What does `AVG(column)` return?",
+            options: ["The average (mean) of the column's values", "The total of the values", "The middle row", "The number of rows"],
+            answer: 0
+          },
+          {
+            q: "Which query returns the average download count?",
+            options: ["SELECT AVG(downloads) FROM apps;", "SELECT MEAN(downloads) FROM apps;", "SELECT AVERAGE downloads FROM apps;", "SELECT MID(downloads) FROM apps;"],
+            answer: 0
+          },
+          {
+            q: "To compute the mean of a numeric column, use:",
+            options: ["AVG()", "SUM()", "COUNT()", "MAX()"],
+            answer: 0
+          }
+        ],
+        explain: "AVG() returns the average (mean) of the values in a numeric column."
+      },
+      {
+        variants: [
+          {
+            q: "What does `ROUND(price, 2)` do?",
+            options: ["Rounds price to 2 decimal places", "Returns the 2nd row", "Multiplies price by 2", "Counts up to 2"],
+            answer: 0
+          },
+          {
+            q: "How many arguments does `ROUND()` take?",
+            options: ["Two — the value, and the number of decimal places", "One — just the value", "Three", "None"],
+            answer: 0
+          },
+          {
+            q: "Which query rounds the average rating to 1 decimal place?",
+            options: ["SELECT ROUND(AVG(imdb_rating), 1) FROM movies;", "SELECT AVG(ROUND(imdb_rating)) FROM movies;", "SELECT ROUND(imdb_rating) FROM movies;", "SELECT AVG(imdb_rating, 1) FROM movies;"],
+            answer: 0
+          }
+        ],
+        explain: "ROUND(column, n) rounds each value to n decimal places. It takes two arguments and is often wrapped around another aggregate, e.g. ROUND(AVG(price), 2)."
+      },
+      {
+        variants: [
+          {
+            q: "What does `GROUP BY` do?",
+            options: ["Splits rows into groups so an aggregate is computed once per group", "Filters individual rows", "Sorts the result", "Removes duplicate columns"],
+            answer: 0
+          },
+          {
+            q: "`SELECT genre, COUNT(*) FROM movies GROUP BY genre;` returns:",
+            options: ["The number of movies in each genre", "The total number of movies", "Every movie sorted by genre", "Only the action movies"],
+            answer: 0
+          },
+          {
+            q: "To count rows per category instead of over the whole table, add:",
+            options: ["GROUP BY category", "WHERE category", "ORDER BY category", "DISTINCT category"],
+            answer: 0
+          }
+        ],
+        explain: "GROUP BY arranges identical values into groups so an aggregate is calculated once per group, not once over the whole table. It comes after WHERE and before HAVING."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `HAVING` clause do?",
+            options: ["Filters groups based on an aggregate, after GROUP BY", "Filters individual rows before grouping", "Sorts the groups", "Joins two tables"],
+            answer: 0
+          },
+          {
+            q: "You want only the genres with more than 3 movies. Which clause does that?",
+            options: ["HAVING COUNT(*) > 3", "WHERE COUNT(*) > 3", "LIMIT 3", "ORDER BY COUNT(*)"],
+            answer: 0
+          },
+          {
+            q: "The difference between WHERE and HAVING is:",
+            options: ["WHERE filters rows before grouping; HAVING filters groups after aggregating", "They are identical", "HAVING always runs first", "WHERE only works with GROUP BY"],
+            answer: 0
+          }
+        ],
+        explain: "HAVING filters groups after aggregation — like WHERE, but for aggregate results. WHERE filters rows before grouping; HAVING filters the grouped output."
+      }
+    ],
+    /* "Claude's Further Studies" — opt-in bonus deck (toggle on the start screen).
+       Deeper, trickier cards focused on the parts the user finds hard: GROUP BY
+       and HAVING (plus NULL behaviour and clause-evaluation order that explain why
+       they behave the way they do). Same card shape, so mastery tracking works
+       for free; their `explain` text is distinct, so each gets a stable cardId. */
+    further: [
+      {
+        variants: [
+          {
+            q: "Why does `SELECT genre FROM movies WHERE COUNT(*) > 2 GROUP BY genre;` fail?",
+            options: ["WHERE runs before grouping, so COUNT(*) isn't available yet — use HAVING", "COUNT(*) is spelled wrong", "You can't SELECT genre with GROUP BY", "WHERE must come after GROUP BY"],
+            answer: 0
+          },
+          {
+            q: "To filter on the result of an aggregate like COUNT() or SUM(), you must use:",
+            options: ["HAVING", "WHERE", "ORDER BY", "LIMIT"],
+            answer: 0
+          },
+          {
+            q: "WHERE filters ___ ; HAVING filters ___ .",
+            options: ["individual rows; groups", "groups; rows", "columns; rows", "nothing; everything"],
+            answer: 0
+          }
+        ],
+        explain: "You can't use an aggregate (like COUNT()) in WHERE — WHERE runs before rows are grouped. Filter on an aggregate with HAVING, which runs after GROUP BY."
+      },
+      {
+        variants: [
+          {
+            q: "In what order does SQL logically process these clauses?",
+            options: ["FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY", "SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY", "WHERE → FROM → SELECT → GROUP BY → ORDER BY → HAVING", "FROM → SELECT → WHERE → GROUP BY → ORDER BY → HAVING"],
+            answer: 0
+          },
+          {
+            q: "Why can't you reference a column alias from SELECT inside WHERE?",
+            options: ["WHERE is evaluated before SELECT, so the alias doesn't exist yet", "Aliases are never allowed in queries", "WHERE only accepts numbers", "You can — it's just slow"],
+            answer: 0
+          },
+          {
+            q: "GROUP BY is evaluated:",
+            options: ["After WHERE but before HAVING", "Before WHERE", "After ORDER BY", "Last of all"],
+            answer: 0
+          }
+        ],
+        explain: "SQL evaluates clauses in a set order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. That's why WHERE (early) can't see aggregates, and HAVING (after grouping) can."
+      },
+      {
+        variants: [
+          {
+            q: "How do `COUNT(*)` and `COUNT(rating)` differ?",
+            options: ["COUNT(*) counts all rows; COUNT(rating) skips rows where rating is NULL", "They are always equal", "COUNT(rating) counts NULLs too", "COUNT(*) ignores NULLs"],
+            answer: 0
+          },
+          {
+            q: "A column has 10 rows, 3 of them NULL. `COUNT(column)` returns:",
+            options: ["7", "10", "3", "0"],
+            answer: 0
+          },
+          {
+            q: "To count only the rows that actually have a value in `email`, use:",
+            options: ["COUNT(email)", "COUNT(*)", "COUNT(DISTINCT *)", "SUM(email)"],
+            answer: 0
+          }
+        ],
+        explain: "COUNT(*) counts every row; COUNT(column) counts only rows where that column is NOT NULL — so they differ whenever the column contains NULLs."
+      },
+      {
+        variants: [
+          {
+            q: "How do `SUM()` and `AVG()` treat NULL values?",
+            options: ["They ignore them — NULLs are skipped entirely", "They treat NULL as 0", "They return NULL if any value is NULL", "They raise an error"],
+            answer: 0
+          },
+          {
+            q: "When some prices are NULL, `AVG(price)` divides the total by:",
+            options: ["The number of non-NULL prices", "The total number of rows", "Always 1", "The number of NULLs"],
+            answer: 0
+          },
+          {
+            q: "If every value in a column is NULL, `SUM(column)` returns:",
+            options: ["NULL", "0", "An error", "The row count"],
+            answer: 0
+          }
+        ],
+        explain: "SUM, AVG, MAX and MIN ignore NULLs. AVG in particular divides by the count of non-NULL values, so NULLs don't drag the average toward zero."
+      },
+      {
+        variants: [
+          {
+            q: "In `SELECT genre, name, COUNT(*) FROM movies GROUP BY genre;`, what's the problem with `name`?",
+            options: ["name isn't grouped or aggregated, so its value per group is arbitrary", "name must be listed first", "COUNT(*) can't be used alongside genre", "Nothing — it's correct"],
+            answer: 0
+          },
+          {
+            q: "In a GROUP BY query, every column in SELECT should be:",
+            options: ["Either named in the GROUP BY or wrapped in an aggregate function", "Always wrapped in COUNT()", "Never the grouped column", "Listed in ORDER BY"],
+            answer: 0
+          },
+          {
+            q: "`SELECT category, SUM(downloads) FROM apps GROUP BY category;` is valid because:",
+            options: ["category is grouped and downloads is aggregated", "SUM works on text", "category is unique", "there is no WHERE clause"],
+            answer: 0
+          }
+        ],
+        explain: "With GROUP BY, each SELECT column should be in the GROUP BY or inside an aggregate. A 'bare' non-grouped column returns an arbitrary row's value per group — rarely what you want."
+      },
+      {
+        variants: [
+          {
+            q: "What does `GROUP BY genre, year` group by?",
+            options: ["Each unique combination of genre and year", "Only genre", "Only year", "Nothing — GROUP BY takes one column"],
+            answer: 0
+          },
+          {
+            q: "To get a count for every (category, price-tier) pair, you:",
+            options: ["List both columns in the GROUP BY", "Use two separate GROUP BY clauses", "Use HAVING twice", "Can't — GROUP BY takes one column"],
+            answer: 0
+          },
+          {
+            q: "Grouping by more columns generally produces:",
+            options: ["More, smaller groups", "Fewer groups", "Exactly one group", "An error"],
+            answer: 0
+          }
+        ],
+        explain: "GROUP BY can take several columns: rows are grouped by each unique combination, and the aggregate is computed per combination."
+      },
+      {
+        variants: [
+          {
+            q: "In `SELECT category, COUNT(*) FROM apps GROUP BY 1;`, what does the `1` mean?",
+            options: ["Group by the 1st column in the SELECT list (category)", "Make exactly 1 group", "Keep only 1 row", "Group by the literal value 1"],
+            answer: 0
+          },
+          {
+            q: "`ORDER BY 2 DESC` sorts by:",
+            options: ["The 2nd column in the SELECT list, descending", "The literal number 2", "The 2nd row", "2 columns at once"],
+            answer: 0
+          },
+          {
+            q: "GROUP BY a column position is mainly a shorthand for:",
+            options: ["Avoiding repeating a long column expression", "Limiting the rows", "Filtering groups", "Renaming a column"],
+            answer: 0
+          }
+        ],
+        explain: "You can GROUP BY (or ORDER BY) a column's position number in the SELECT list — GROUP BY 1 groups by the first selected column. Handy with long expressions, though naming the column is clearer."
+      },
+      {
+        variants: [
+          {
+            q: "`SELECT category, SUM(downloads) FROM apps GROUP BY category HAVING SUM(downloads) > 10000 ORDER BY SUM(downloads) DESC;` returns:",
+            options: ["Each category whose total downloads exceed 10000, highest total first", "Every app over 10000 downloads", "The single most-downloaded app", "All categories sorted alphabetically"],
+            answer: 0
+          },
+          {
+            q: "In that query, HAVING filters:",
+            options: ["The category groups, by their total downloads", "Individual app rows", "The ORDER BY result", "The column names"],
+            answer: 0
+          },
+          {
+            q: "Add `LIMIT 1` to that query and you get:",
+            options: ["The category with the highest total downloads (over 10000)", "The first app that was inserted", "One random row", "An error"],
+            answer: 0
+          }
+        ],
+        explain: "A real aggregate query layers up: WHERE narrows rows, GROUP BY forms groups, HAVING filters those groups by an aggregate, then ORDER BY / LIMIT ranks them. Read them in execution order and the result is obvious."
+      }
+    ]
   }
 ];
 
@@ -2140,7 +2498,8 @@ const MODULES = [
    set `verify` — a SELECT run after the user's statements — and we compare the
    resulting DB state to the solution's. Sample ratings & years are kept unique
    so ORDER BY / LIMIT tasks have a single deterministic answer. Progress feeds
-   the same Leitner SRS via each task's `id` (all prefixed "sqlt-").
+   the same mastery-box tracking as flashcards via each task's `id` (all
+   prefixed "sqlt-").
    ========================================================================= */
 const CELEBS = `CREATE TABLE celebs (id INTEGER, name TEXT, age INTEGER);
 INSERT INTO celebs VALUES (1,'Justin Bieber',22),(2,'Beyonce Knowles',39),(3,'Jeremy Lin',32),(4,'Taylor Swift',33);`;
@@ -2168,8 +2527,22 @@ INSERT INTO movies VALUES
  (4,'Mystery Reel','drama',2018,NULL),
  (5,'Toy Story','comedy',1995,8.3);`;
 
+/* Aggregates theme — an app store. Downloads are all unique (so MAX/MIN/ORDER BY
+   are deterministic) and total 70000 across 7 rows, so AVG is a clean 10000.
+   Categories: Education×2, Lifestyle×2, Music×2, Food×1 — group sums all differ. */
+const APPS = `CREATE TABLE apps (id INTEGER, name TEXT, category TEXT, downloads INTEGER, price REAL);
+INSERT INTO apps VALUES
+ (1,'Sift','Education',5000,0.99),
+ (2,'Quizzly','Education',8000,1.99),
+ (3,'Rentr','Lifestyle',12000,0.00),
+ (4,'Splashr','Lifestyle',3000,2.99),
+ (5,'PlayTunes','Music',20000,0.00),
+ (6,'BeatBox','Music',15000,3.99),
+ (7,'Foodly','Food',7000,0.00);`;
+
 const MANIP = "SQL Practice · Manipulation";
 const QUERY = "SQL Practice · Queries";
+const AGG = "SQL Practice · Aggregates";
 
 const SQL_TASKS = [
   /* ---- Manipulation (celebs theme) ---- */
@@ -2366,6 +2739,78 @@ const SQL_TASKS = [
     solution: "SELECT name, CASE WHEN imdb_rating > 8 THEN 'Excellent' ELSE 'Good' END AS label FROM movies;",
     hint: "CASE WHEN … THEN … ELSE … END AS label.",
     explain: "CASE adds if/then logic inside a query: CASE WHEN condition THEN result ELSE result END; END closes it."
+  },
+
+  /* ---- Aggregate Functions (apps theme) ---- */
+  {
+    id: "sqlt-a-count", group: AGG, name: "COUNT()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Count how many apps are in the table.",
+    solution: "SELECT COUNT(*) FROM apps;",
+    hint: "COUNT(*) returns the number of rows.",
+    explain: "COUNT(*) returns the total number of rows — your first aggregate, turning many rows into one number."
+  },
+  {
+    id: "sqlt-a-sum", group: AGG, name: "SUM()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Return the total number of downloads across all apps.",
+    solution: "SELECT SUM(downloads) FROM apps;",
+    hint: "SUM(column) adds up every value.",
+    explain: "SUM() adds together all the values in a numeric column."
+  },
+  {
+    id: "sqlt-a-max", group: AGG, name: "MAX()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Find the highest download count of any single app.",
+    solution: "SELECT MAX(downloads) FROM apps;",
+    hint: "MAX(column) returns the largest value.",
+    explain: "MAX() returns the largest value in a column."
+  },
+  {
+    id: "sqlt-a-min", group: AGG, name: "MIN()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Find the smallest download count of any single app.",
+    solution: "SELECT MIN(downloads) FROM apps;",
+    hint: "MIN(column) returns the smallest value.",
+    explain: "MIN() returns the smallest value in a column."
+  },
+  {
+    id: "sqlt-a-avg", group: AGG, name: "AVG()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Return the average number of downloads per app.",
+    solution: "SELECT AVG(downloads) FROM apps;",
+    hint: "AVG(column) returns the mean.",
+    explain: "AVG() returns the mean of a numeric column's values."
+  },
+  {
+    id: "sqlt-a-round", group: AGG, name: "ROUND()", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Return the average price of all apps, rounded to 2 decimal places.",
+    solution: "SELECT ROUND(AVG(price), 2) FROM apps;",
+    hint: "Wrap the AVG() in ROUND(value, 2).",
+    explain: "ROUND(value, n) rounds to n decimal places — here it wraps AVG(price) to tidy up a long decimal."
+  },
+  {
+    id: "sqlt-a-group-count", group: AGG, name: "GROUP BY + COUNT", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Count how many apps are in each category. Return the category and its count.",
+    solution: "SELECT category, COUNT(*) FROM apps GROUP BY category;",
+    hint: "SELECT category, COUNT(*) … GROUP BY category;",
+    explain: "GROUP BY category forms one group per category; COUNT(*) is then computed once per group instead of over the whole table."
+  },
+  {
+    id: "sqlt-a-group-sum", group: AGG, name: "GROUP BY + SUM", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Return each category alongside its total downloads.",
+    solution: "SELECT category, SUM(downloads) FROM apps GROUP BY category;",
+    hint: "Pair SUM(downloads) with GROUP BY category.",
+    explain: "Combine an aggregate with GROUP BY to summarise each group — here the total downloads per category."
+  },
+  {
+    id: "sqlt-a-having", group: AGG, name: "HAVING", tables: ["apps"], setup: APPS, verify: null,
+    prompt: "Return only the categories that have more than one app. Show just the category.",
+    solution: "SELECT category FROM apps GROUP BY category HAVING COUNT(*) > 1;",
+    hint: "Filter the groups with HAVING COUNT(*) > 1.",
+    explain: "HAVING filters groups after aggregation. WHERE can't be used here because COUNT(*) doesn't exist yet when WHERE runs — HAVING runs after GROUP BY."
+  },
+  {
+    id: "sqlt-a-top-category", group: AGG, name: "Top group (HAVING + ORDER BY)", tables: ["apps"], setup: APPS, verify: null, ordered: true,
+    prompt: "Which category has the most total downloads? Return that one category and its total — highest first, limited to 1 row.",
+    solution: "SELECT category, SUM(downloads) FROM apps GROUP BY category ORDER BY SUM(downloads) DESC LIMIT 1;",
+    hint: "GROUP BY category, then ORDER BY SUM(downloads) DESC LIMIT 1.",
+    explain: "After grouping you can ORDER BY an aggregate and LIMIT to rank the groups — here the single most-downloaded category (Music)."
   }
 ];
 
@@ -2412,10 +2857,12 @@ function applyTheme(theme) {
 /* ---- Persistent study data ----------------------------------------------
    DATA = {
      version, best,
-     srs: { [cardId]: { box:1..5, due:ms, seen, correct, wrong, lastSeen:ms } }
+     srs: { [cardId]: { box:1..5, seen, correct, wrong, lastSeen:ms } }
    }
-   Spaced repetition uses a Leitner box per card: a right answer promotes the
-   card a box (so it's seen less often), a wrong answer sends it back to box 1.
+   Each card carries a Leitner-style mastery box: a right answer promotes it a
+   box (up to 5), a wrong answer sends it back to box 1. The box drives the
+   "Mastered" stat and the Weak-spots filter only — there is no due-date
+   scheduling, so the app never tells you anything is "due".
    A card's identity is its concept (the shared `explain`), not the wording, so
    progress survives adding or rewording variants later. ------------------- */
 function loadData() {
@@ -2440,32 +2887,21 @@ function cardId(moduleId, card) {
   return card.id || (moduleId + "-" + hashStr(card.explain || JSON.stringify(card.variants || card)));
 }
 
-/* Leitner scheduling: interval in days for each resulting box (1..5). */
-const DAY = 86400000;
-const BOX_DAYS = [0, 1, 2, 4, 8, 16];
 function getRec(id) {
-  return DATA.srs[id] || { box: 0, due: 0, seen: 0, correct: 0, wrong: 0, lastSeen: 0 };
-}
-function isDue(id, now) {
-  const r = DATA.srs[id];
-  if (!r || !r.seen) return true;        // never-seen cards are always due
-  return (r.due || 0) <= now;
+  return DATA.srs[id] || { box: 0, seen: 0, correct: 0, wrong: 0, lastSeen: 0 };
 }
 function recordResult(id, correct) {
   if (!id) return;
   const r = getRec(id);
-  const now = Date.now();
   r.seen++;
   if (correct) {
     r.correct++;
-    r.box = Math.min((r.box || 0) + 1, 5);
-    r.due = now + BOX_DAYS[r.box] * DAY;
+    r.box = Math.min((r.box || 0) + 1, 5);   // promote: closer to mastered
   } else {
     r.wrong++;
-    r.box = 1;
-    r.due = now;                          // bring missed cards back next session
+    r.box = 1;                               // miss: back to the bottom box
   }
-  r.lastSeen = now;
+  r.lastSeen = Date.now();
   DATA.srs[id] = r;
   saveData();
 }
@@ -2482,15 +2918,10 @@ function masteryStats() {
   cards.forEach(c => { const r = DATA.srs[c.id]; if (r && r.box >= 4) mastered++; });
   return { mastered, total: cards.length };
 }
-function dueCount(cards, now) {
-  let n = 0;
-  cards.forEach(c => { if (isDue(c.id, now)) n++; });
-  return n;
-}
 
 let selectedModules = new Set(MODULES.map(m => m.id)); // default: all selected
 const collapsedGroups = new Set();                     // module-group accordion state (default: all open)
-let studyMode = "smart";                                // smart | all | weak
+let studyMode = "all";                                  // all | weak
 let activeQuestions = [];
 let current = 0;
 let score = 0;
@@ -2499,9 +2930,8 @@ let answeredThis = false;
 
 /* ---- Start screen build ---- */
 const STUDY_MODES = [
-  { id: "smart", name: "Smart review", desc: "Spaced repetition — due & new cards, weakest first" },
-  { id: "all",   name: "All cards",    desc: "Every card in the selected modules" },
-  { id: "weak",  name: "Weak spots",   desc: "Only cards you keep getting wrong" }
+  { id: "all",  name: "All cards",  desc: "Every card in the selected modules, shuffled" },
+  { id: "weak", name: "Weak spots", desc: "Only cards you keep getting wrong" }
 ];
 
 function renderModes() {
@@ -2519,7 +2949,6 @@ function renderModes() {
 function renderModules() {
   const box = $("moduleList");
   box.innerHTML = "";
-  const now = Date.now();
   /* Group modules under their `group` heading, preserving first-seen order. */
   const order = [];
   const byGroup = {};
@@ -2551,13 +2980,12 @@ function renderModules() {
     const inner = document.createElement("div");
     inner.className = "group-body-inner";
     byGroup[g].forEach(m => {
-      const cards = m.questions.map(card => ({ id: cardId(m.id, card) }));
-      const due = dueCount(cards, now);
       const btn = document.createElement("button");
       btn.className = "choice sub" + (selectedModules.has(m.id) ? " selected" : "");
+      const bonus = m.further ? ` <b>+${m.further.length} bonus</b>` : "";
       btn.innerHTML = `
         <span><span class="check">✓ </span>${m.name}</span>
-        <span class="count">${m.questions.length} cards${due ? ` · <b>${due} due</b>` : ""}</span>`;
+        <span class="count">${m.questions.length} cards${bonus}</span>`;
       btn.onclick = () => {
         if (selectedModules.has(m.id)) selectedModules.delete(m.id);
         else selectedModules.add(m.id);
@@ -2575,18 +3003,16 @@ function renderModules() {
 function renderProgressSummary() {
   const { mastered, total } = masteryStats();
   const pct = total ? Math.round((mastered / total) * 100) : 0;
-  const due = dueCount(allCards(), Date.now());
   const sp = practiceStats();
   $("progressSummary").innerHTML = `
     <div class="stat"><span class="v">${pct}%</span><span class="l">Mastered</span></div>
     <div class="stat"><span class="v">${mastered}/${total}</span><span class="l">Cards</span></div>
-    <div class="stat"><span class="v">${due}</span><span class="l">Due now</span></div>
     <div class="stat"><span class="v">${sp.mastered}/${sp.total}</span><span class="l">SQL tasks</span></div>
     <div class="stat"><span class="v">${DATA.best || 0}%</span><span class="l">Best quiz</span></div>`;
 }
 
 function updateStartLabel() {
-  const map = { smart: "Start smart review →", all: "Study all cards →", weak: "Drill weak spots →" };
+  const map = { all: "Study all cards →", weak: "Drill weak spots →" };
   $("startBtn").textContent = map[studyMode] || "Start studying →";
 }
 
@@ -2596,7 +3022,6 @@ function refreshStart() {
   renderModules();
   renderPractice();
   updateStartLabel();
-  updateTabBadges();
   applyTab();
   $("startBtn").disabled = selectedModules.size === 0;
 }
@@ -2619,9 +3044,9 @@ function pickVariant(card) {
 }
 
 function buildQuestions() {
-  const now = Date.now();
-
   /* gather candidate cards from the selected modules */
+  const ft = $("furtherToggle");
+  const includeFurther = !!(ft && ft.checked);   // "Claude's Further Studies" bonus deck
   let cards = [];
   MODULES.forEach(m => {
     if (!selectedModules.has(m.id)) return;
@@ -2629,24 +3054,19 @@ function buildQuestions() {
       const id = cardId(m.id, card);
       cards.push({ m, card, id, rec: DATA.srs[id] });
     });
+    if (includeFurther && m.further) {
+      m.further.forEach(card => {
+        const id = cardId(m.id, card);
+        cards.push({ m, card, id, rec: DATA.srs[id] });
+      });
+    }
   });
 
-  /* narrow + order by study mode */
-  if (studyMode === "smart") {
-    let due = cards.filter(c => isDue(c.id, now));
-    if (!due.length) {                       // nothing due — surface the soonest few
-      due = cards.slice()
-                 .sort((a, b) => (a.rec ? a.rec.due : 0) - (b.rec ? b.rec.due : 0))
-                 .slice(0, Math.min(10, cards.length));
-    }
-    cards = due.sort((a, b) =>
-      ((a.rec ? a.rec.box : 0) - (b.rec ? b.rec.box : 0)) ||      // weakest first
-      ((a.rec ? a.rec.due : 0) - (b.rec ? b.rec.due : 0)));       // most overdue next
-  } else if (studyMode === "weak") {
+  /* narrow by study mode ("all" keeps every selected card) */
+  if (studyMode === "weak") {
     cards = cards.filter(c => c.rec && c.rec.seen && c.rec.box <= 2)
                  .sort((a, b) => (a.rec.box - b.rec.box) || (b.rec.wrong - a.rec.wrong));
   }
-  /* studyMode === "all" keeps every selected card */
 
   /* one random wording per card, carrying its stable id */
   let qs = cards.map(({ m, card, id }) => {
@@ -2728,7 +3148,7 @@ function selectAnswer(i) {
     missed.push(q);
   }
 
-  recordResult(q.id, correct);   // update spaced-repetition schedule
+  recordResult(q.id, correct);   // update this card's mastery box
 
   const v = $("verdict");
   v.className = "verdict " + (correct ? "ok" : "no");
@@ -2834,13 +3254,6 @@ function applyTab() {
   $("practicalTab").classList.toggle("hidden", activeTab !== "practical");
 }
 function selectTab(t) { activeTab = t; applyTab(); }
-function updateTabBadges() {
-  const now = Date.now();
-  const cardsDue = dueCount(allCards(), now);
-  const tasksDue = SQL_TASKS.filter(t => isDue(t.id, now)).length;
-  $("tabTheory").querySelector(".tab-sub").textContent = cardsDue ? `${cardsDue} due` : "flashcards";
-  $("tabPractical").querySelector(".tab-sub").textContent = tasksDue ? `${tasksDue} due` : "write SQL";
-}
 
 /* ---- Lazy-load the SQLite engine (sql.js), only when first needed ---- */
 let _sqlReady = null;
@@ -2951,15 +3364,10 @@ function renderSchema(SQL, task) {
   box.innerHTML = html;
 }
 
-/* ---- Build the task list for the selected sets (due first, weakest first) ---- */
+/* ---- Build the task list for the selected sets (weakest first) ---- */
 function buildTasks() {
-  const now = Date.now();
-  let tasks = SQL_TASKS.filter(t => selectedPractice.has(t.group));
-  let due = tasks.filter(t => isDue(t.id, now));
-  if (!due.length) {                       // nothing due — surface the soonest few to drill ahead
-    due = tasks.slice().sort((a, b) => getRec(a.id).due - getRec(b.id).due).slice(0, Math.min(8, tasks.length));
-  }
-  return due.sort((a, b) => (getRec(a.id).box - getRec(b.id).box) || (getRec(a.id).due - getRec(b.id).due));
+  const tasks = SQL_TASKS.filter(t => selectedPractice.has(t.group));
+  return tasks.slice().sort((a, b) => getRec(a.id).box - getRec(b.id).box);
 }
 
 function startPractice(tasks) {
@@ -3020,7 +3428,7 @@ function revealOutcome(task, correct) {
   $("markCorrectBtn").style.display = correct ? "none" : "inline-flex";
   if (!taskRecorded) {
     taskRecorded = true;
-    recordResult(task.id, correct);          // feed the Leitner SRS (first attempt counts)
+    recordResult(task.id, correct);          // update mastery box (first attempt counts)
     if (correct) { pSolved++; $("pScore").textContent = `Solved: ${pSolved}`; }
     else pMissed.push(task);
   }
@@ -3091,15 +3499,13 @@ function finishPractice() {
 function renderPractice() {
   const box = $("practiceList");
   box.innerHTML = "";
-  const now = Date.now();
   practiceGroups().forEach(g => {
     const tasks = SQL_TASKS.filter(t => t.group === g);
-    const due = tasks.filter(t => isDue(t.id, now)).length;
     const btn = document.createElement("button");
     btn.className = "choice" + (selectedPractice.has(g) ? " selected" : "");
     btn.innerHTML = `
       <span><span class="check">✓ </span>${g.replace("SQL Practice · ", "")}</span>
-      <span class="count">${tasks.length} tasks${due ? ` · <b>${due} due</b>` : ""}</span>`;
+      <span class="count">${tasks.length} tasks</span>`;
     btn.onclick = () => {
       if (selectedPractice.has(g)) selectedPractice.delete(g); else selectedPractice.add(g);
       btn.classList.toggle("selected");
@@ -3124,8 +3530,8 @@ $("startBtn").onclick = () => {
   if (qs.length) { $("startNote").textContent = ""; startQuiz(qs); }
   else {
     $("startNote").textContent = studyMode === "weak"
-      ? "No weak spots right now — nice work. Try “All cards” to keep reviewing."
-      : "Nothing due in the selected modules. Switch to “All cards” to study ahead, or come back later.";
+      ? "No weak spots right now — nice work. Switch to “All cards” to keep reviewing."
+      : "Nothing to study here yet — pick some modules above.";
   }
 };
 $("nextBtn").onclick = nextQuestion;
