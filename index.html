@@ -2510,6 +2510,360 @@ const MODULES = [
         explain: "A real aggregate query layers up: WHERE narrows rows, GROUP BY forms groups, HAVING filters those groups by an aggregate, then ORDER BY / LIMIT ranks them. Read them in execution order and the result is obvious."
       }
     ]
+  },
+  {
+    id: "sql-multiple-tables",
+    group: "Learn SQL",
+    name: "Multiple Tables",
+    questions: [
+      {
+        variants: [
+          {
+            q: "What does an inner `JOIN` do?",
+            options: ["Combines rows from two tables where a condition matches", "Stacks the rows of two tables on top of each other", "Deletes rows that don't match", "Sorts two tables together"],
+            answer: 0
+          },
+          {
+            q: "Which query returns each book next to its author's name?",
+            options: ["SELECT * FROM books JOIN authors ON books.author_id = authors.id;", "SELECT * FROM books UNION authors;", "SELECT * FROM books, authors GROUP BY id;", "SELECT * FROM books CROSS JOIN authors;"],
+            answer: 0
+          },
+          {
+            q: "A plain `JOIN` (inner join) returns:",
+            options: ["Only the rows that have a match in both tables", "Every row from both tables", "Only rows from the left table", "Every possible combination of rows"],
+            answer: 0
+          }
+        ],
+        explain: "JOIN (an inner join) combines rows from two tables, returning only the rows where the ON condition matches in both. It's how you pull related data — a book and its author — into one result."
+      },
+      {
+        variants: [
+          {
+            q: "What is the `ON` clause for in a join?",
+            options: ["It states the condition that links the two tables — which columns must match", "It names the table to join", "It sorts the joined rows", "It limits how many rows return"],
+            answer: 0
+          },
+          {
+            q: "In `books JOIN authors ON books.author_id = authors.id`, the ON part:",
+            options: ["Matches each book's author_id to an author's id", "Renames the columns", "Counts the rows", "Filters by year"],
+            answer: 0
+          },
+          {
+            q: "The columns named in an `ON` clause are usually:",
+            options: ["A foreign key matched to the primary key it references", "Two unrelated text columns", "Always called id and id", "The columns you want in the output"],
+            answer: 0
+          }
+        ],
+        explain: "ON specifies the join condition — the columns that must match for two rows to be combined, usually a foreign key matched to a primary key (books.author_id = authors.id)."
+      },
+      {
+        variants: [
+          {
+            q: "What does a `LEFT JOIN` return?",
+            options: ["Every row from the left table, plus matching right-table data (NULL where there's no match)", "Only matching rows from both tables", "Every row from the right table only", "Every possible combination"],
+            answer: 0
+          },
+          {
+            q: "If a left-table row has no match in the right table, a LEFT JOIN fills the right columns with:",
+            options: ["NULL", "0", "An empty string", "The previous row's value"],
+            answer: 0
+          },
+          {
+            q: "To list all authors *including those with no books*, you'd use:",
+            options: ["LEFT JOIN", "INNER JOIN", "CROSS JOIN", "UNION"],
+            answer: 0
+          }
+        ],
+        explain: "A LEFT JOIN (left outer join) keeps every row from the left table; where the join condition isn't met, the right table's columns come back as NULL. Use it to keep unmatched rows instead of dropping them."
+      },
+      {
+        variants: [
+          {
+            q: "What does a `CROSS JOIN` produce?",
+            options: ["Every possible combination of rows from the two tables", "Only the matching rows", "All left rows with NULLs", "The distinct rows of both tables"],
+            answer: 0
+          },
+          {
+            q: "A CROSS JOIN of a 3-row table and a 4-row table returns how many rows?",
+            options: ["12", "7", "3", "4"],
+            answer: 0
+          },
+          {
+            q: "A CROSS JOIN is also known as a:",
+            options: ["Cartesian product", "Self join", "Inner join", "Union"],
+            answer: 0
+          }
+        ],
+        explain: "CROSS JOIN combines every row of one table with every row of the other — a Cartesian product. With no ON condition, an m-row and an n-row table give m×n rows."
+      },
+      {
+        variants: [
+          {
+            q: "What does `UNION` do?",
+            options: ["Stacks the results of two SELECT statements into one set, removing duplicates", "Joins two tables side by side on a key", "Counts rows across tables", "Creates a new table"],
+            answer: 0
+          },
+          {
+            q: "For two SELECTs to be combined with UNION, they must:",
+            options: ["Have the same number of columns, with compatible types", "Come from the same table", "Both use a WHERE clause", "Already be sorted"],
+            answer: 0
+          },
+          {
+            q: "By default, `UNION` handles duplicate rows by:",
+            options: ["Removing them, keeping only distinct rows", "Keeping every duplicate", "Raising an error", "Counting them"],
+            answer: 0
+          }
+        ],
+        explain: "UNION combines the rows of two or more SELECT statements into one result set and filters out duplicates. The SELECTs must return the same number of columns with matching data types."
+      },
+      {
+        variants: [
+          {
+            q: "What does the `WITH` clause create?",
+            options: ["A named temporary result (a CTE) you can query like a table", "A new permanent table on disk", "A backup of the database", "A column alias"],
+            answer: 0
+          },
+          {
+            q: "In `WITH recent AS (SELECT …) SELECT * FROM recent;`, what is `recent`?",
+            options: ["A temporary named query result used by the main SELECT", "A real table saved to disk", "A single column", "A database file"],
+            answer: 0
+          },
+          {
+            q: "A common name for what `WITH` defines is a:",
+            options: ["Common Table Expression (CTE)", "Foreign key", "Trigger", "Index"],
+            answer: 0
+          }
+        ],
+        explain: "WITH defines a Common Table Expression (CTE) — it stores a query's result in a temporary, named table you can reference in the main query. It keeps complex queries readable by naming intermediate steps."
+      },
+      {
+        variants: [
+          {
+            q: "What is a primary key?",
+            options: ["A column whose value uniquely identifies each row and can't be NULL", "A column that links to another table", "Always the first column in a table", "A column that allows duplicates"],
+            answer: 0
+          },
+          {
+            q: "How many primary keys can a single table have?",
+            options: ["One", "As many as you like", "Exactly two", "None"],
+            answer: 0
+          },
+          {
+            q: "A primary key value must be:",
+            options: ["Unique and not NULL", "Always a number", "Allowed to repeat", "Optional"],
+            answer: 0
+          }
+        ],
+        explain: "A primary key uniquely identifies each record in a table. Its values must be unique and can never be NULL, and a table has at most one primary key."
+      },
+      {
+        variants: [
+          {
+            q: "What is a foreign key?",
+            options: ["A column that references the primary key of another table", "A backup copy of the primary key", "A column that must be unique", "A key that locks the table"],
+            answer: 0
+          },
+          {
+            q: "In a books table, `author_id` pointing at `authors.id` is:",
+            options: ["A foreign key", "A primary key", "A composite key", "A unique index"],
+            answer: 0
+          },
+          {
+            q: "Foreign keys are what let you:",
+            options: ["Relate rows across tables (and join them)", "Sort a table", "Delete a database", "Rename columns"],
+            answer: 0
+          }
+        ],
+        explain: "A foreign key is a column that references another table's primary key, creating the relationship between the two tables. It's typically the column you match in a JOIN's ON clause (books.author_id → authors.id)."
+      }
+    ],
+    /* "Claude's Further Studies" — opt-in bonus deck (toggle beside the module).
+       Deeper, trickier cards on the parts the user wants to drill: the different
+       JOIN types and exactly how they behave, plus UNION vs UNION ALL, JOIN vs
+       UNION, CTEs and the PK↔FK relationship. Same card shape so mastery tracks
+       for free; each `explain` is distinct so every card gets a stable cardId. */
+    further: [
+      {
+        variants: [
+          {
+            q: "Compared with a LEFT JOIN, an INNER JOIN:",
+            options: ["Drops rows that have no match on *either* side", "Keeps all left rows", "Keeps all right rows", "Keeps everything"],
+            answer: 0
+          },
+          {
+            q: "A book with no author and an author with no books — under an INNER JOIN they:",
+            options: ["Both disappear from the result", "Both appear with NULLs", "Cause an error", "Appear twice"],
+            answer: 0
+          },
+          {
+            q: "Think of an inner join as the ___ of the two tables on the join key.",
+            options: ["intersection", "union", "difference", "product"],
+            answer: 0
+          }
+        ],
+        explain: "An inner join returns only rows with a match on both sides — the intersection on the join key. Any left row without a right match (and vice-versa) is dropped, unlike a LEFT JOIN, which keeps the unmatched left rows."
+      },
+      {
+        variants: [
+          {
+            q: "After a LEFT JOIN, how do you keep only the left rows that had NO match on the right?",
+            options: ["Add WHERE right_table.key IS NULL", "Add WHERE right_table.key IS NOT NULL", "Use COUNT(*)", "Switch to an INNER JOIN"],
+            answer: 0
+          },
+          {
+            q: "`authors LEFT JOIN books … WHERE books.id IS NULL` returns:",
+            options: ["Authors who have no books", "Authors who have books", "All authors", "All books"],
+            answer: 0
+          },
+          {
+            q: "This 'keep only the unmatched rows' technique is called a(n):",
+            options: ["Anti-join", "Cross join", "Self join", "Equi-join"],
+            answer: 0
+          }
+        ],
+        explain: "A LEFT JOIN keeps unmatched left rows with NULLs on the right. Filtering WHERE right.key IS NULL then keeps *only* those unmatched rows — the 'anti-join' pattern for finding records with no related row (authors with no books)."
+      },
+      {
+        variants: [
+          {
+            q: "What does a FULL OUTER JOIN return?",
+            options: ["All rows from both tables — matching where possible, NULL-filling where not", "Only the matching rows", "Only the left rows", "Every combination of rows"],
+            answer: 0
+          },
+          {
+            q: "A RIGHT JOIN is just a LEFT JOIN with the tables:",
+            options: ["Swapped — it keeps all rows from the right table", "Sorted", "Counted", "Deduplicated"],
+            answer: 0
+          },
+          {
+            q: "`A LEFT JOIN B` keeps all of A; in SQLite, to instead keep all of B you can:",
+            options: ["Write `B LEFT JOIN A` (swap the order)", "It's impossible", "Use a CROSS JOIN", "Use UNION"],
+            answer: 0
+          }
+        ],
+        explain: "RIGHT JOIN keeps all rows of the right table; FULL OUTER JOIN keeps all rows of both, NULL-filling non-matches. SQLite historically supports only LEFT — but a RIGHT join is simply a LEFT join with the tables swapped."
+      },
+      {
+        variants: [
+          {
+            q: "An inner join is conceptually a CROSS JOIN followed by:",
+            options: ["Filtering on the ON condition", "Sorting", "Removing duplicates", "Grouping"],
+            answer: 0
+          },
+          {
+            q: "Why is an accidental CROSS JOIN (a forgotten ON) dangerous on large tables?",
+            options: ["It explodes to m×n rows", "It deletes data", "It's always empty", "It locks the table"],
+            answer: 0
+          },
+          {
+            q: "A CROSS JOIN of a 100-row and a 100-row table produces:",
+            options: ["10,000 rows", "200 rows", "100 rows", "1 row"],
+            answer: 0
+          }
+        ],
+        explain: "An inner join is really a CROSS JOIN (every m×n combination) with the ON condition filtering down to the matches. Forget the ON and you get the full Cartesian product — which blows up fast on large tables."
+      },
+      {
+        variants: [
+          {
+            q: "Why prefix columns as `books.title` / `authors.name` in a join?",
+            options: ["To remove ambiguity when both tables could have a column of that name", "It runs faster", "It's required for every column", "To sort them"],
+            answer: 0
+          },
+          {
+            q: "If both joined tables have an `id` column, selecting just `id` will:",
+            options: ["Be ambiguous — SQL can't tell which table you mean", "Silently default to the left table", "Return both id columns", "Always work fine"],
+            answer: 0
+          },
+          {
+            q: "`FROM books AS b JOIN authors AS a` lets you:",
+            options: ["Refer to the tables by short aliases (b.title, a.name)", "Rename the tables permanently", "Skip the ON clause", "Join three tables at once"],
+            answer: 0
+          }
+        ],
+        explain: "When joined tables share a column name (like id), you must qualify it as table.column to avoid ambiguity. Table aliases (books AS b) are shorthand that keep those qualified names short and the query readable."
+      },
+      {
+        variants: [
+          {
+            q: "How does `UNION ALL` differ from `UNION`?",
+            options: ["UNION ALL keeps duplicate rows; UNION removes them", "UNION ALL sorts; UNION doesn't", "They are identical", "UNION ALL joins on a key"],
+            answer: 0
+          },
+          {
+            q: "Why prefer `UNION ALL` when you know there are no duplicates?",
+            options: ["It skips the de-duplication step, so it's faster", "It sorts automatically", "It checks types more strictly", "It removes NULLs"],
+            answer: 0
+          },
+          {
+            q: "Stacking two 3-row lists that share one value: UNION gives ___, UNION ALL gives ___.",
+            options: ["5 rows; 6 rows", "6 rows; 5 rows", "3 rows; 3 rows", "6 rows; 6 rows"],
+            answer: 0
+          }
+        ],
+        explain: "UNION removes duplicate rows (an extra de-dup step); UNION ALL keeps every row, duplicates included, and is faster. Reach for UNION ALL when duplicates are impossible or actually wanted."
+      },
+      {
+        variants: [
+          {
+            q: "JOIN and UNION combine tables differently. JOIN adds ___; UNION adds ___.",
+            options: ["columns (side by side); rows (stacked)", "rows; columns", "indexes; keys", "nothing; everything"],
+            answer: 0
+          },
+          {
+            q: "Two same-shaped tables (this year's and last year's sales) and you want one long list. Use:",
+            options: ["UNION — stack the rows", "JOIN — match on a key", "CROSS JOIN", "GROUP BY"],
+            answer: 0
+          },
+          {
+            q: "Customers and their orders in two tables, and you want each order beside its customer. Use:",
+            options: ["JOIN — combine columns on a key", "UNION", "UNION ALL", "DISTINCT"],
+            answer: 0
+          }
+        ],
+        explain: "A JOIN combines tables horizontally — it widens each row with columns from a related table matched on a key. A UNION combines them vertically — it stacks same-shaped result sets into more rows. Different problems, different tool."
+      },
+      {
+        variants: [
+          {
+            q: "A CTE (`WITH`) is most like:",
+            options: ["A named subquery you can reference (and reuse) by name", "A permanent table", "A column alias", "An index"],
+            answer: 0
+          },
+          {
+            q: "One readability advantage of a CTE over a nested subquery is:",
+            options: ["You name each step and read top-to-bottom instead of inside-out", "It avoids JOINs", "It runs in parallel", "It removes duplicates"],
+            answer: 0
+          },
+          {
+            q: "Can one query define more than one CTE?",
+            options: ["Yes — separate them with commas after a single WITH", "No, only one per query", "Only with UNION", "Only inside a subquery"],
+            answer: 0
+          }
+        ],
+        explain: "A CTE names an intermediate result so you can reference it like a table — clearer than a deeply nested subquery because you read it top-down. You can chain several CTEs (comma-separated), and later ones can build on earlier ones."
+      },
+      {
+        variants: [
+          {
+            q: "In a one-to-many relationship (one author, many books), the foreign key lives:",
+            options: ["On the 'many' side — books.author_id points to authors.id", "On the 'one' side — authors.book_id", "On both sides", "Nowhere — it's automatic"],
+            answer: 0
+          },
+          {
+            q: "The columns you put in a join's ON clause are usually:",
+            options: ["A foreign key matched to the primary key it references", "Two primary keys", "Two random columns", "The id columns of unrelated tables"],
+            answer: 0
+          },
+          {
+            q: "A primary key must be unique, but a foreign key:",
+            options: ["Can repeat — many child rows may reference the same parent", "Must also be unique", "Cannot be used in a join", "Must be NULL"],
+            answer: 0
+          }
+        ],
+        explain: "The foreign key sits on the 'many' side and references the parent's primary key — that PK↔FK pair is exactly what you match in ON. The PK is unique, but the same FK value can repeat (many books share one author): a one-to-many relationship."
+      }
+    ]
   }
 ];
 
@@ -2563,9 +2917,32 @@ INSERT INTO apps VALUES
  (6,'BeatBox','Music',15000,3.99),
  (7,'Foodly','Food',7000,0.00);`;
 
+/* Multiple Tables theme — a small library. `books.author_id` is a foreign key
+   into `authors.id`. Orwell (id 3) has NO books, so LEFT JOIN / anti-join tasks
+   are deterministic (only Orwell comes back as unmatched, COUNT 0). `formats` is
+   a tiny 2-row table for a clean CROSS JOIN (4 books × 2 formats = 8 rows). */
+const LIBRARY = `CREATE TABLE authors (id INTEGER, name TEXT);
+INSERT INTO authors VALUES (1,'Austen'),(2,'Tolkien'),(3,'Orwell');
+CREATE TABLE books (id INTEGER, title TEXT, author_id INTEGER, year INTEGER);
+INSERT INTO books VALUES
+ (1,'Pride and Prejudice',1,1813),
+ (2,'Emma',1,1815),
+ (3,'The Hobbit',2,1937),
+ (4,'The Silmarillion',2,1977);
+CREATE TABLE formats (name TEXT);
+INSERT INTO formats VALUES ('Hardcover'),('Ebook');`;
+
+/* Two same-shaped subscriber lists for UNION / UNION ALL. They overlap on
+   'Lewis' and 'Ramona', so UNION (4 distinct) vs UNION ALL (6 rows) differ. */
+const SUBSCRIBERS = `CREATE TABLE newspaper (id INTEGER, name TEXT);
+INSERT INTO newspaper VALUES (1,'Lewis'),(2,'Ramona'),(3,'Sandy');
+CREATE TABLE online (id INTEGER, name TEXT);
+INSERT INTO online VALUES (4,'Lewis'),(5,'Hines'),(6,'Ramona');`;
+
 const MANIP = "SQL Practice · Manipulation";
 const QUERY = "SQL Practice · Queries";
 const AGG = "SQL Practice · Aggregates";
+const MT = "SQL Practice · Multiple Tables";
 
 const SQL_TASKS = [
   /* ---- Manipulation (celebs theme) ---- */
@@ -2834,6 +3211,78 @@ const SQL_TASKS = [
     solution: "SELECT category, SUM(downloads) FROM apps GROUP BY category ORDER BY SUM(downloads) DESC LIMIT 1;",
     hint: "GROUP BY category, then ORDER BY SUM(downloads) DESC LIMIT 1.",
     explain: "After grouping you can ORDER BY an aggregate and LIMIT to rank the groups — here the single most-downloaded category (Music)."
+  },
+
+  /* ---- Multiple Tables (library + subscribers themes) ---- */
+  {
+    id: "sqlt-mt-join", group: MT, name: "INNER JOIN", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Return each book's title alongside its author's name. Join books to authors on the author_id / id columns.",
+    solution: "SELECT books.title, authors.name FROM books JOIN authors ON books.author_id = authors.id;",
+    hint: "FROM books JOIN authors ON books.author_id = authors.id",
+    explain: "An inner JOIN combines rows from both tables where the ON condition matches — here every book is paired with the author whose id equals its author_id."
+  },
+  {
+    id: "sqlt-mt-join-where", group: MT, name: "JOIN + WHERE", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Return just the titles of the books written by Austen. (Join the tables, then filter on the author's name.)",
+    solution: "SELECT books.title FROM books JOIN authors ON books.author_id = authors.id WHERE authors.name = 'Austen';",
+    hint: "Add WHERE authors.name = 'Austen' to the join.",
+    explain: "Once two tables are joined you can filter the combined rows with WHERE — here keeping only the rows whose author is Austen."
+  },
+  {
+    id: "sqlt-mt-left", group: MT, name: "LEFT JOIN", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "List every author's name with the title of each of their books — including authors who have no books (their title should come back NULL). Use a LEFT JOIN.",
+    solution: "SELECT authors.name, books.title FROM authors LEFT JOIN books ON authors.id = books.author_id;",
+    hint: "authors LEFT JOIN books — the left table (authors) keeps all its rows.",
+    explain: "A LEFT JOIN keeps every row from the left table (authors); where there's no matching book, the book columns come back as NULL — so Orwell still appears, with a NULL title."
+  },
+  {
+    id: "sqlt-mt-antijoin", group: MT, name: "Anti-join (no match)", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Find the names of authors who have NO books. (LEFT JOIN authors to books, then keep only the rows where the book side is NULL.)",
+    solution: "SELECT authors.name FROM authors LEFT JOIN books ON authors.id = books.author_id WHERE books.id IS NULL;",
+    hint: "After the LEFT JOIN, add WHERE books.id IS NULL.",
+    explain: "The 'anti-join' pattern: a LEFT JOIN keeps unmatched authors with NULLs on the book side, and WHERE books.id IS NULL keeps only those unmatched rows — the authors with no books (Orwell)."
+  },
+  {
+    id: "sqlt-mt-cross", group: MT, name: "CROSS JOIN", tables: ["books", "formats"], setup: LIBRARY, verify: null,
+    prompt: "Produce every possible pairing of a book title with a format. Return the title and the format name.",
+    solution: "SELECT books.title, formats.name FROM books CROSS JOIN formats;",
+    hint: "CROSS JOIN has no ON — it pairs every row with every row.",
+    explain: "CROSS JOIN returns the Cartesian product — every book combined with every format. Four books × two formats = eight rows."
+  },
+  {
+    id: "sqlt-mt-union", group: MT, name: "UNION", tables: ["newspaper", "online"], setup: SUBSCRIBERS, verify: null,
+    prompt: "Combine the names from the newspaper and online subscriber lists into a single list, with no duplicates.",
+    solution: "SELECT name FROM newspaper UNION SELECT name FROM online;",
+    hint: "SELECT name FROM newspaper UNION SELECT name FROM online;",
+    explain: "UNION stacks the rows of two SELECTs into one result and removes duplicates — Lewis and Ramona appear in both lists but show up once."
+  },
+  {
+    id: "sqlt-mt-union-all", group: MT, name: "UNION ALL", tables: ["newspaper", "online"], setup: SUBSCRIBERS, verify: null,
+    prompt: "Combine both subscriber name lists again, but this time keep the duplicates. Use UNION ALL.",
+    solution: "SELECT name FROM newspaper UNION ALL SELECT name FROM online;",
+    hint: "UNION ALL keeps every row, duplicates included.",
+    explain: "UNION ALL stacks the rows without de-duplicating, so the shared names appear twice — six rows here versus UNION's four. It's faster because it skips the de-dup step."
+  },
+  {
+    id: "sqlt-mt-cte", group: MT, name: "WITH (CTE)", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Use a WITH clause to build a temporary table called author_books that pairs each author's name with their book titles, then select just the titles written by Tolkien.",
+    solution: "WITH author_books AS (SELECT authors.name AS author, books.title AS title FROM authors JOIN books ON authors.id = books.author_id) SELECT title FROM author_books WHERE author = 'Tolkien';",
+    hint: "WITH author_books AS ( … join … ) SELECT title FROM author_books WHERE author = 'Tolkien';",
+    explain: "WITH defines a CTE — a named, temporary result you query like a table. Here author_books holds the joined name/title pairs, and the main query then filters it down to Tolkien's titles."
+  },
+  {
+    id: "sqlt-mt-join-count", group: MT, name: "JOIN + GROUP BY", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Return each author's name and how many books they have written, including authors with zero. Use a LEFT JOIN and GROUP BY, and COUNT the books.",
+    solution: "SELECT authors.name, COUNT(books.id) FROM authors LEFT JOIN books ON authors.id = books.author_id GROUP BY authors.name;",
+    hint: "LEFT JOIN keeps the bookless author; COUNT(books.id) ignores the NULL, giving 0.",
+    explain: "Joins and aggregates combine: LEFT JOIN keeps every author, GROUP BY makes one group per author, and COUNT(books.id) counts only non-NULL book ids — so the bookless author scores 0, not 1."
+  },
+  {
+    id: "sqlt-mt-alias", group: MT, name: "Table aliases", tables: ["authors", "books"], setup: LIBRARY, verify: null,
+    prompt: "Rewrite the book/author join using table aliases: alias books as b and authors as a, and return b.title and a.name.",
+    solution: "SELECT b.title, a.name FROM books AS b JOIN authors AS a ON b.author_id = a.id;",
+    hint: "FROM books AS b JOIN authors AS a ON b.author_id = a.id",
+    explain: "Table aliases (books AS b) give each table a short name, keeping qualified columns like b.title readable. They're essential once queries get long or a table is joined to itself."
   }
 ];
 
@@ -3029,7 +3478,7 @@ function renderModules() {
         fbtn.type = "button";
         fbtn.className = "further-toggle" + (furtherModules.has(m.id) ? " on" : "");
         fbtn.setAttribute("aria-pressed", String(furtherModules.has(m.id)));
-        fbtn.title = "Claude's Further Studies — swap in deeper cards (GROUP BY & HAVING) instead of the basic set";
+        fbtn.title = "Claude's Further Studies — swap in deeper cards for this module instead of the basic set";
         fbtn.innerHTML = `✦ Further`;
         fbtn.onclick = (e) => {
           e.stopPropagation();
